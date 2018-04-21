@@ -1,0 +1,1 @@
+para instalar la aplicacion es necesario tener en su maquina los programas descritos en el contenido del curso y seguir las instrucciones de los creadores
