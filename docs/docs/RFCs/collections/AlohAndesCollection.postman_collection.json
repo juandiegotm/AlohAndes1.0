@@ -1,0 +1,284 @@
+{
+	"info": {
+		"name": "AlohAndesCollection",
+		"_postman_id": "d77403d9-88ee-541b-58e8-c171dfb5ea4a",
+		"description": "Está colección permite realizar las correspondientes pruebas al proyecto AlohAndes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RFC1 - Dinero recibido por cada proveedor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ecd0b10-a298-42b7-a16e-a7bdd7e7d9e3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/operadores/dineroRecibido",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"operadores",
+						"dineroRecibido"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RFC2 - 20 Ofertas más populares  ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "02da8f6c-c2df-4d87-8313-82d4210029a5",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/ofertasMasPopulares",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"ofertas",
+						"ofertasMasPopulares"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RDC3 - Indice de ocupación",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f2ec3c45-b6bf-419b-a892-69dff7fa806c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/indiceOcupacion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"ofertas",
+						"indiceOcupacion"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RFC4 - Alojamientos por fechas y servicios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "27443bf4-52fb-4640-b5b0-c3a65d61ea18",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"fechaInicio\": \"10/03/2015\",\r\n\t\"fechaFin\": \"20/03/2019\",\r\n\t\"servicios\": [\"telefonia\"]\r\n\t}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/alojamientoPorFechasYServicios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"ofertas",
+						"alojamientoPorFechasYServicios"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RFC5 - Uso de AlohAndes para todos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8c9ece83-69c4-436e-812b-d8d7549cd32c",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/usoAlohAndes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"usoAlohAndes"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RFC8 - Clientes frecuentes de un alojamiento",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c32c2c5-ffa4-4c87-aab4-1c12407e5062",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/clientesFrecuentes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"clientesFrecuentes"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RDC9 - Ofertas de alojamiento sin mucha demanda",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bb94729d-7087-4484-aa19-802c5476385f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/ofertasConPocaDemanda",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"ofertas",
+						"ofertasConPocaDemanda"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

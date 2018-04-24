@@ -84,6 +84,83 @@ public class DAOReserva extends DAOAlohAndes{
 		return reserva;
 
 	}
+	
+	public List<Integer> getPeriodoConMasReservas(String periodoParam) throws SQLException, Exception {
+		List<Integer> periodoYcantidad = new ArrayList<>();
+		
+		String sql = String.format("SELECT PERIODO_CON_MAS_RESERVAS, CANTIDAD_RESERVAS FROM("
+									+"SELECT PERIODO AS PERIODO_CON_MAS_RESERVAS, COUNT (PERIODO) AS CANTIDAD_RESERVAS, ROW_NUMBER() OVER (ORDER BY  COUNT (PERIODO) DESC)AS POSICION" 
+										+"FROM"
+											+"(SELECT IDRESERVA, EXTRACT( "+periodoParam+ " FROM FECHARESERVA)PERIODO FROM RESERVA INNER JOIN OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA WHERE OFERTA.TIPODEOFERTA='OFERTAHOTEL')" 
+										+"GROUP BY PERIODO)"
+									+"WHERE POSICION=1;");
+		System.out.println(sql);
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet resultado = prepStmt.executeQuery();
+		
+		periodoYcantidad.set(0, resultado.getInt("PERIODO_CON_MAS_RESERVAS"));
+		periodoYcantidad.set(1, resultado.getInt("CANTIDAD_RESERVAS"));
+		
+		return periodoYcantidad;
+	}
+	
+	public List<Integer> getPeriodoConMasIngresos(String periodoParam) throws SQLException, Exception {
+		List<Integer> periodoYvalor = new ArrayList<>();
+		
+		String sql = String.format("SELECT PERIODO_CON_MAS_INGRESOS, VALOR_TOTAL FROM ("
+									    +"SELECT PERIODO AS PERIODO_CON_MAS_INGRESOS, VALOR_TOTAL, ROW_NUMBER() OVER (ORDER BY VALOR_TOTAL DESC)AS POSICION" 
+									        +"FROM"
+									            +"(SELECT PERIODO, SUM (VALOR_TOTAL_RESERVA) AS VALOR_TOTAL FROM"
+									            +"(SELECT RESERVA.IDRESERVA, OFERTA.VALOR*OFERTA.DURACION AS VALOR_TOTAL_RESERVA, EXTRACT( "+periodoParam+ " FROM RESERVA.FECHARESERVA)PERIODO FROM (RESERVA INNER JOIN OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA)" 
+									            +"WHERE OFERTA.TIPODEOFERTA='OFERTAHOTEL')"
+									    +"GROUP BY PERIODO)"
+									+")WHERE POSICION=1;");
+		System.out.println(sql);
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet resultado = prepStmt.executeQuery();
+		
+		periodoYvalor.set(0, resultado.getInt("PERIODO_CON_MAS_INGRESOS"));
+		periodoYvalor.set(1, resultado.getInt("VALOR_TOTAL"));
+		
+		return periodoYvalor;
+	}
+	
+	public List<Integer> getPeriodoConMenosReservas(String periodoParam) throws SQLException, Exception {
+		List<Integer> periodoYcantidad = new ArrayList<>();
+		
+		String sql = String.format("SELECT PERIODO_CON_MENOS_RESERVAS, CANTIDAD_RESERVAS FROM("
+								    +"SELECT PERIODO AS PERIODO_CON_MENOS_RESERVAS, COUNT (PERIODO) AS CANTIDAD_RESERVAS, ROW_NUMBER() OVER (ORDER BY  COUNT (PERIODO) ASC)AS POSICION" 
+								        +"FROM"
+								            +"(SELECT IDRESERVA, EXTRACT( "+periodoParam+ " FROM FECHARESERVA)PERIODO FROM RESERVA INNER JOIN OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA WHERE OFERTA.TIPODEOFERTA='OFERTAHOTEL')" 
+								        +"GROUP BY PERIODO)"
+								    +"WHERE POSICION=1;");
+		System.out.println(sql);
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet resultado = prepStmt.executeQuery();
+		
+		periodoYcantidad.set(0, resultado.getInt("PERIODO_CON_MENOS_RESERVAS"));
+		periodoYcantidad.set(1, resultado.getInt("CANTIDAD_RESERVAS"));
+		
+		return periodoYcantidad;
+	}
+	
+	//Este metodo lo que hace es unificar los tres metodos anteriores en una lista de listas
+	
+	public List<List<Integer>> getOperacionDeAlohAndes(String periodoParam) throws SQLException, Exception {
+		List<List<Integer>> periodosYValoresTotales = new ArrayList<>();
+		
+		periodosYValoresTotales.add(getPeriodoConMasReservas(periodoParam));
+		periodosYValoresTotales.add(getPeriodoConMasIngresos(periodoParam));
+		periodosYValoresTotales.add(getPeriodoConMenosReservas(periodoParam));
+		
+		return periodosYValoresTotales;
+	}
 
 
 }

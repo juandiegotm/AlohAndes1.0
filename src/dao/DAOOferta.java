@@ -4,7 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -55,8 +59,6 @@ public class DAOOferta extends DAOAlohAndes {
 		Oferta oferta = new Oferta(idOferta, valor, duracion, fechaInicio, fechaFinal, cantidadDisponible, direccion, tipoOferta, cantidadInicial);
 				
 		return oferta;
-
-
 	}
 	
 	public Oferta buscarOfertaPorId(Long id) throws SQLException, Exception {
@@ -86,7 +88,41 @@ public class DAOOferta extends DAOAlohAndes {
 		prepStmt.executeQuery();
 	}
 	
+	public List<Oferta> getOfertasEnRangoDeFechasYCiertosServicios(Date fechaInicio, Date fechaFinal, List<String> servicios) throws SQLException, Exception{
+		ArrayList<Oferta> ofertas = new ArrayList<>();
+		String sql=null;
+		Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+		
+		String timestampFechaInicio = formatter.format(fechaInicio);
+		String timestampFechaFinal = formatter.format(fechaInicio);
+		
+		for (int i = 0; i < servicios.size(); i++) {
 
+			sql = String.format("SELECT * " 
+					+"FROM ("
+					+"SELECT OFERTA.IDOFERTA, OFERTA.FECHAINICIO, OFERTA.FECHAFINAL, SERVICIO.NOMBRESERVICIO AS SERVICIOS "
+					+"FROM %1$s.OFERTA INNER JOIN %1$s.SERVICIO ON SERVICIO.IDOFERTA = OFERTA.IDOFERTA "
+					+"WHERE OFERTA.FECHAINICIO >= TO_DATE('%2$s', 'DD-MM-YYYY') AND OFERTA.FECHAFINAL<= TO_DATE('%3$s', 'DD-MM-YYYY')"
+					+"AND OFERTA.CANTIDADDISPONIBLE>0 "
+					+"AND SERVICIO.NOMBRESERVICIO= '%4$s'"
+					+")", USUARIO, timestampFechaInicio, timestampFechaFinal, servicios.get(i));
+			
+			System.out.println(sql);
+			
+			PreparedStatement query = conn.prepareStatement(sql);
+			ResultSet resultado = query.executeQuery();
+
+			recursos.add(query);
+
+			while(resultado.next()){
+				ofertas.add(convetirResultSet(resultado));
+			}
+
+
+		}
+		return ofertas;
+	}
+	
 	public ArrayNode getOfertasMasPopulares() throws SQLException, Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode ofertas = mapper.createArrayNode();
@@ -163,6 +199,25 @@ public class DAOOferta extends DAOAlohAndes {
 		
 		return ofertas;
 		
+	}
+	
+	public ArrayList<Oferta> getOfertasConPocaDemanda() throws SQLException, Exception{
+		ArrayList<Oferta> ofertasConPocaDemanda = new ArrayList<>();
+
+		String sql = String.format("SELECT * FROM ( ((SELECT OFERTA.IDOFERTA AS ID_OFERTA FROM %1$s.OFERTA) MINUS (SELECT OFERTA.IDOFERTA FROM (%1$s.RESERVA INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA) WHERE RESERVA.FECHARESERVA <= OFERTA.FECHAPUBLICACION+30)) UNION (SELECT R1.IDOFERTA AS ID_OFERTA FROM (%1$s.RESERVA R1 INNER JOIN %1$s.RESERVA R2 ON R1.IDOFERTA = R2.IDOFERTA AND R1.FECHARESERVA < R2.FECHARESERVA) WHERE (R1.FECHARESERVA + 30 <= R2.FECHARESERVA)) UNION (SELECT ID_OFERTA FROM ( SELECT OFERTA.IDOFERTA AS ID_OFERTA, MAX(RESERVA.FECHARESERVA) FECHA_ULTIMA_RESERVA FROM (%1$s.RESERVA INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA) GROUP BY OFERTA.IDOFERTA) WHERE FECHA_ULTIMA_RESERVA+30 <= CURRENT_TIMESTAMP) ) INNER JOIN %1$s.OFERTA ON OFERTA.IDOFERTA=ID_OFERTA", USUARIO);
+
+		PreparedStatement query = conn.prepareStatement(sql);
+		System.out.println(sql);
+		ResultSet resultado = query.executeQuery();
+
+		recursos.add(query);
+
+		while(resultado.next()){
+			ofertasConPocaDemanda.add(convetirResultSet(resultado));
+		}
+
+		return ofertasConPocaDemanda;
+
 	}
 	
 	

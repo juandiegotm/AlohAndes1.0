@@ -11,7 +11,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.node.ArrayNode;
+
 import tm.AlohAndesTransactionManager;
+import vos.Oferta;
 import vos.PersonaHabilitada;
 import vos.Reserva;
 
@@ -73,6 +76,35 @@ public class PersonaHabilitadaService extends AlohAndesService {
 		instancia.setContext(this.context);
 		return instancia;
 	}
+	
+	@GET
+	@Produces({MediaType.APPLICATION_JSON})
+	@Path("/clientesFrecuentes")
+	public Response getClientesFrecuentes() {
+		try {
+			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+			List<PersonaHabilitada> clientesFrecuentes = tm.getClientesFrecuentes();
+
+			return Response.status(200).entity(clientesFrecuentes).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+	}
+	
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/usoAlohAndes")
+	public Response getUsoDeAlohAndesPorCadaUsuario() {
+		try {
+			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+			ArrayNode personas = tm.getUsoDeAlohAndesPorCadaUsuario();
+
+			return Response.status(200).entity(personas).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+	}
+
 
 		
 //		@POST

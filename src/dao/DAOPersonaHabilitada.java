@@ -5,6 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
 import vos.PersonaHabilitada;
 
 public class DAOPersonaHabilitada extends DAOAlohAndes {
@@ -86,6 +93,72 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 		return persona;
 
 
+	}
+	
+	public List<PersonaHabilitada> getClientesFrecuentes() throws SQLException, Exception {
+		List<PersonaHabilitada> clientesFrecuentes = new ArrayList<>();
+
+		String sql = String.format("(SELECT IDPERSONAHABILITADA, NOMBRE, TELEFONO, EMAIL " 
+				+"FROM PERSONAHABILITADA INNER JOIN "
+				+"(SELECT  RESERVA.IDPERSONAHABILITADA AS ID "
+				+"FROM (RESERVA INNER JOIN OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA) WHERE OFERTA.DURACION>=15) " 
+				+"ON PERSONAHABILITADA.IDPERSONAHABILITADA = ID) "
+
+									+"UNION"
+
+									    +"(SELECT IDPERSONAHABILITADA, NOMBRE, TELEFONO, EMAIL "
+									    +"FROM PERSONAHABILITADA INNER JOIN( "
+									    +"SELECT IDPERSON FROM ( "
+									    +"SELECT IDPERSON, JUNTITOS, COUNT (JUNTITOS) AS OCASIONES FROM ( "
+									    +"SELECT IDPERSON, CONCAT (IDPERSON, IDOFER) AS JUNTITOS FROM( "
+									    + "SELECT RESERVA.IDPERSONAHABILITADA AS IDPERSON, OFERTA.IDOFERTA AS IDOFER "
+									    +"FROM (RESERVA INNER JOIN OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA))) " 
+									    +"GROUP BY JUNTITOS, IDPERSON) "
+									    +"WHERE OCASIONES>=2) "
+									    +"ON PERSONAHABILITADA.IDPERSONAHABILITADA = IDPERSON "
+									    +")");
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet resultado = prepStmt.executeQuery();
+
+		if(resultado.next()) {
+			clientesFrecuentes.add(convetirResultSet(resultado));
+		}
+		return clientesFrecuentes;
+	}
+	
+	
+	public ArrayNode getUsoDeAlohAndesPorCadaUsuario() throws SQLException, Exception{
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode usuarios = mapper.createArrayNode();
+		
+		String sql = String.format("SELECT PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE, OFERTA.TIPODEOFERTA AS CARACTERISTICA, OFERTA.DURACION AS DIAS_CONTRATADOS, OFERTA.VALOR AS VALOR_DIA FROM (( %1$s.PERSONAHABILITADA INNER JOIN %1$s.RESERVA ON RESERVA.IDPERSONAHABILITADA = PERSONAHABILITADA.IDPERSONAHABILITADA) INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA) WHERE RESERVA.ESTADORESERVA='finalizado'", USUARIO);
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		ResultSet resultado = prepStmt.executeQuery();
+		
+		
+		while(resultado.next()) {
+			ObjectNode usuario = mapper.createObjectNode();
+			
+			Long idPersonasHabilitada = resultado.getLong("IDPERSONAHABILITADA");
+			String nombre = resultado.getString("NOMBRE");
+			String caracteristica = resultado.getString("CARACTERISTICA");
+			Integer diasContratados = resultado.getInt("DIAS_CONTRATADOS");
+			Double valorDia = resultado.getDouble("VALOR_DIA");
+			
+			usuario.put("Id", idPersonasHabilitada);
+			usuario.put("Nombre:", nombre);
+			usuario.put("Caracteristuca", caracteristica);
+			usuario.put("DiasContratados", diasContratados);
+			usuario.put("ValorDia", valorDia);
+			
+			usuarios.add(usuario);
+		}
+		
+		return usuarios;
+		
 	}
 
 

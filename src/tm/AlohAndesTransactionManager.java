@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
@@ -621,7 +622,206 @@ public class AlohAndesTransactionManager {
 			}
 		
 	}
+	
+	/**
+	 * RFC7
+	 */
+	public List<List<Integer>> getOperacionDeAlohAndes(String periodoParam) throws Exception {
+		DAOReserva dao = new DAOReserva();
+
+		List<List<Integer>> operacionDeAlohAndes;
+		try {
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			operacionDeAlohAndes = dao.getOperacionDeAlohAndes(periodoParam);
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+		return operacionDeAlohAndes;
+
+	}
+
+	/**
+	 * RFC8
+	 */
+	public List<PersonaHabilitada> getClientesFrecuentes() throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		List<PersonaHabilitada> clientesFrecuentes;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			clientesFrecuentes = dao.getClientesFrecuentes();
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return clientesFrecuentes;
+	}
+
+	/**
+	 * RFC9
+	 */
+	public List<Oferta> getOfertasConPocaDemanda() throws Exception {
+		DAOOferta dao = new DAOOferta();
+		List<Oferta> ofertasConPocaDemanda;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			ofertasConPocaDemanda = dao.getOfertasConPocaDemanda();
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ofertasConPocaDemanda;
+	}
 		
+	
+	/**
+	 * RFC4
+	 */
+	public List<Oferta> getOfertasEnRangoDeFechasYCiertosServicios(Date fechaInicio, Date fechaFinal, List<String> servicios) throws Exception {
+		DAOOferta dao = new DAOOferta();
+		List<Oferta> ofertas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			ofertas = dao.getOfertasEnRangoDeFechasYCiertosServicios(fechaInicio, fechaFinal, servicios);
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ofertas;
+	}
+	
+	/**
+	 * RFC5
+	 */
+	public ArrayNode getUsoDeAlohAndesPorCadaUsuario() throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		ArrayNode personas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+			
+			personas = dao.getUsoDeAlohAndesPorCadaUsuario();
+
+			
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return personas;
+	}
 		
 	
 }

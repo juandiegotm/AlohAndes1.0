@@ -18,7 +18,7 @@ public class DAOAlohAndes {
 		public final static String JUAN_DIEGO_USER = "ISIS2304A981810";
 
 
-		public final static String USUARIO = JUAN_DIEGO_USER;
+		public final static String USUARIO = CARLOS_MARIO_USER;
 
 
 		//----------------------------------------------------------------------------------------------------------------------------------
