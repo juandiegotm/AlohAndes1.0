@@ -19,6 +19,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import tm.AlohAndesTransactionManager;
 import vos.Oferta;
+import vos.ReservaColectiva;
 
 @Path("/reservas")
 public class ReservaService extends AlohAndesService{
@@ -38,6 +39,40 @@ public class ReservaService extends AlohAndesService{
 
 			return Response.status(200).entity(operacionDeAlohAndes).build();
 		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+	}
+	
+	@POST
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	@Path("/reservaColectiva")
+	public Response crearReservaColectiva(ReservaColectiva reservaColectiva) {
+		try {
+			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+			
+			tm.crearReservaColectiva(reservaColectiva);
+			
+			return Response.status(200).entity(reservaColectiva).build();
+		}
+		
+		catch(Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+	}
+	
+	@DELETE
+	@Path("/reservaColectiva/{id: \\d+}")
+	public Response eliminarReservaColectiva(@PathParam("id") Long idReserva ) {
+		try {
+			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+			
+			tm.eliminarReservaColectiva(idReserva);
+			
+			return Response.status(200).build();
+		}
+		
+		catch(Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 	}

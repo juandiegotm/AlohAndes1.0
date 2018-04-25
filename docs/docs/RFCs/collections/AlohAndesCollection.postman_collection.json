@@ -370,6 +370,63 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "RF7 - Crear reserva colectiva",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"idReservaColectiva\": 1, \n\"idPersonaHabilitada\": \"512345603\",\n\"fechaReserva\": \"2015-10-1\",\n\"estadoReserva\": \"RESERVADO\",\n\"tipoDeAlojamiento\": \"OFERTAHABITACION\",\n\"cantidad\": 2,\n\"servicios\":[\n\t\"internet\",\n\t\"luz\"\n]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/reservas/reservaColectiva",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"reservas",
+						"reservaColectiva"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RF8 - Eliminar una reserva colectiva",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/reservas/reservaColectiva/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"reservas",
+						"reservaColectiva",
+						"1"
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
