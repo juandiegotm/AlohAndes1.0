@@ -245,6 +245,45 @@ public class AlohAndesTransactionManager {
 			return ofertas;
 		}
 		
+		/**
+		 * RFC4
+		 */
+		public ArrayNode getOfertasEnRangoDeFechasYCiertosServicios(Date fechaInicio, Date fechaFinal, List<String> servicios) throws Exception {
+			DAOOferta dao = new DAOOferta();
+			ArrayNode ofertas;
+			try 
+			{
+				this.conn = darConexion();
+				dao.setConn(conn);
+
+				ofertas = dao.getOfertasEnRangoDeFechasYCiertosServicios(fechaInicio, fechaFinal, servicios);
+			}
+			catch (SQLException sqlException) {
+				System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+				sqlException.printStackTrace();
+				throw sqlException;
+			} 
+			catch (Exception exception) {
+				System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			} 
+			finally {
+				try {
+					dao.cerrarRecursos();
+					if(this.conn!=null){
+						this.conn.close();					
+					}
+				}
+				catch (SQLException exception) {
+					System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			return ofertas;
+		}
+		
 		public Oferta buscarOfertaPorId(Long id) throws Exception {
 			DAOOferta dao = new DAOOferta();
 			Oferta oferta = null;
@@ -321,6 +360,46 @@ public class AlohAndesTransactionManager {
 				}
 			
 		}
+			
+		/**
+		 * RFC9
+		 */
+		public List<Oferta> getOfertasConPocaDemanda() throws Exception {
+			DAOOferta dao = new DAOOferta();
+			List<Oferta> ofertasConPocaDemanda;
+			try 
+			{
+				this.conn = darConexion();
+				dao.setConn(conn);
+
+				ofertasConPocaDemanda = dao.getOfertasConPocaDemanda();
+			}
+			catch (SQLException sqlException) {
+				System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+				sqlException.printStackTrace();
+				throw sqlException;
+			} 
+			catch (Exception exception) {
+				System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			} 
+			finally {
+				try {
+					dao.cerrarRecursos();
+					if(this.conn!=null){
+						this.conn.close();					
+					}
+				}
+				catch (SQLException exception) {
+					System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+			return ofertasConPocaDemanda;
+		}
+			
 		
 		//----------------------------------------------------------------------------------------------------------------------------------
 		// METODOS TRANSACCIONALES DE OPERADOR. 
@@ -503,7 +582,53 @@ public class AlohAndesTransactionManager {
 				}
 			}
 		}
+	
+	/**
+	 * RFC7
+	 */
+	public ArrayNode getOperacionDeAlohAndes(String periodoParam, String tipoOferta) throws Exception {
+		DAOReserva dao = new DAOReserva();
+
+		ArrayNode operacionDeAlohAndes;
+		try {
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			operacionDeAlohAndes = dao.getOperacionDeAlohAndes(periodoParam, tipoOferta);
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+		return operacionDeAlohAndes;
+
+	}
 		
+	
+	//----------------------------------------------------------------------------------------------------------------------------------
+	// METODOS TRANSACCIONALES DE PERSONAHABILITADA. 
+	//----------------------------------------------------------------------------------------------------------------------------------
+	
 	/**
 	 * Metodo que modela la transaccion que retorna todos las personas habilitadas
 	 * de la base de datos. <br/>
@@ -620,54 +745,14 @@ public class AlohAndesTransactionManager {
 					throw exception;
 				}
 			}
-		
 	}
 	
-	/**
-	 * RFC7
-	 */
-	public List<List<Integer>> getOperacionDeAlohAndes(String periodoParam) throws Exception {
-		DAOReserva dao = new DAOReserva();
-
-		List<List<Integer>> operacionDeAlohAndes;
-		try {
-			this.conn = darConexion();
-			dao.setConn(conn);
-
-			operacionDeAlohAndes = dao.getOperacionDeAlohAndes(periodoParam);
-		}
-		catch (SQLException sqlException) {
-			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
-			sqlException.printStackTrace();
-			throw sqlException;
-		} 
-		catch (Exception exception) {
-			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
-			exception.printStackTrace();
-			throw exception;
-		} 
-		finally {
-			try {
-				dao.cerrarRecursos();
-				if(this.conn!=null){
-					this.conn.close();					
-				}
-			}
-			catch (SQLException exception) {
-				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-
-		return operacionDeAlohAndes;
-
-	}
+	
 
 	/**
 	 * RFC8
 	 */
-	public List<PersonaHabilitada> getClientesFrecuentes() throws Exception {
+	public List<PersonaHabilitada> getClientesFrecuentes(Long idOferta) throws Exception {
 		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
 		List<PersonaHabilitada> clientesFrecuentes;
 		try 
@@ -675,7 +760,7 @@ public class AlohAndesTransactionManager {
 			this.conn = darConexion();
 			dao.setConn(conn);
 
-			clientesFrecuentes = dao.getClientesFrecuentes();
+			clientesFrecuentes = dao.getClientesFrecuentes(idOferta);
 		}
 		catch (SQLException sqlException) {
 			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
@@ -703,87 +788,11 @@ public class AlohAndesTransactionManager {
 		return clientesFrecuentes;
 	}
 
-	/**
-	 * RFC9
-	 */
-	public List<Oferta> getOfertasConPocaDemanda() throws Exception {
-		DAOOferta dao = new DAOOferta();
-		List<Oferta> ofertasConPocaDemanda;
-		try 
-		{
-			this.conn = darConexion();
-			dao.setConn(conn);
-
-			ofertasConPocaDemanda = dao.getOfertasConPocaDemanda();
-		}
-		catch (SQLException sqlException) {
-			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
-			sqlException.printStackTrace();
-			throw sqlException;
-		} 
-		catch (Exception exception) {
-			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
-			exception.printStackTrace();
-			throw exception;
-		} 
-		finally {
-			try {
-				dao.cerrarRecursos();
-				if(this.conn!=null){
-					this.conn.close();					
-				}
-			}
-			catch (SQLException exception) {
-				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-		return ofertasConPocaDemanda;
-	}
-		
 	
 	/**
-	 * RFC4
-	 */
-	public List<Oferta> getOfertasEnRangoDeFechasYCiertosServicios(Date fechaInicio, Date fechaFinal, List<String> servicios) throws Exception {
-		DAOOferta dao = new DAOOferta();
-		List<Oferta> ofertas;
-		try 
-		{
-			this.conn = darConexion();
-			dao.setConn(conn);
-
-			ofertas = dao.getOfertasEnRangoDeFechasYCiertosServicios(fechaInicio, fechaFinal, servicios);
-		}
-		catch (SQLException sqlException) {
-			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
-			sqlException.printStackTrace();
-			throw sqlException;
-		} 
-		catch (Exception exception) {
-			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
-			exception.printStackTrace();
-			throw exception;
-		} 
-		finally {
-			try {
-				dao.cerrarRecursos();
-				if(this.conn!=null){
-					this.conn.close();					
-				}
-			}
-			catch (SQLException exception) {
-				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-		return ofertas;
-	}
-	
-	/**
-	 * RFC5
+	 * RFC5 
+	 * @return
+	 * @throws Exception
 	 */
 	public ArrayNode getUsoDeAlohAndesPorCadaUsuario() throws Exception {
 		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
@@ -794,6 +803,44 @@ public class AlohAndesTransactionManager {
 			dao.setConn(conn);
 			
 			personas = dao.getUsoDeAlohAndesPorCadaUsuario();
+
+			
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return personas;
+	}
+	
+	public ArrayNode getUsoDeAlohAndesPorUsuarioEspecifico(Long id) throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		ArrayNode personas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+			
+			personas = dao.getUsoDeAlohAndesPorUsuarioEspecifico(id);
 
 			
 		}

@@ -79,11 +79,11 @@ public class PersonaHabilitadaService extends AlohAndesService {
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	@Path("/clientesFrecuentes")
-	public Response getClientesFrecuentes() {
+	@Path("/clientesFrecuentes/{idOferta: \\d+}")
+	public Response getClientesFrecuentes(@PathParam("idOferta") Long idOferta) {
 		try {
 			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
-			List<PersonaHabilitada> clientesFrecuentes = tm.getClientesFrecuentes();
+			List<PersonaHabilitada> clientesFrecuentes = tm.getClientesFrecuentes(idOferta);
 
 			return Response.status(200).entity(clientesFrecuentes).build();
 		} catch (Exception e) {
@@ -98,6 +98,20 @@ public class PersonaHabilitadaService extends AlohAndesService {
 		try {
 			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
 			ArrayNode personas = tm.getUsoDeAlohAndesPorCadaUsuario();
+
+			return Response.status(200).entity(personas).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+	}
+	
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/usoAlohAndes/{idPersona: \\d+}")
+	public Response getUsoDeAlohAndesParaUsuarioEspecifico(@PathParam("idPersona") Long idPersona) {
+		try {
+			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+			ArrayNode personas = tm.getUsoDeAlohAndesPorUsuarioEspecifico(idPersona);
 
 			return Response.status(200).entity(personas).build();
 		} catch (Exception e) {

@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -29,11 +30,11 @@ public class ReservaService extends AlohAndesService{
 	
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
-	@Path("/operacionDeAlohAndes/{periodo: \\d+}")
-	public Response getOperacionDeAlohAndes(@PathParam("periodo") String periodo) {
+	@Path("/consultarPorPeriodo")
+	public Response getOperacionDeAlohAndes(@QueryParam("periodo") String periodo, @QueryParam("tipoOferta") String tipoOferta) {
 		try {
 			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
-			List<List<Integer>> operacionDeAlohAndes = tm.getOperacionDeAlohAndes(periodo);
+			ArrayNode operacionDeAlohAndes = tm.getOperacionDeAlohAndes(periodo, tipoOferta);
 
 			return Response.status(200).entity(operacionDeAlohAndes).build();
 		} catch (Exception e) {

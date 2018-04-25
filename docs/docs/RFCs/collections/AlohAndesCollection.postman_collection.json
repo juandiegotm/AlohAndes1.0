@@ -65,7 +65,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/ofertasMasPopulares",
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/indiceOcupacion",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -75,7 +75,7 @@
 						"AlohAndes1.0",
 						"rest",
 						"ofertas",
-						"ofertasMasPopulares"
+						"indiceOcupacion"
 					]
 				},
 				"description": ""
@@ -146,7 +146,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"fechaInicio\": \"10/03/2015\",\r\n\t\"fechaFin\": \"20/03/2019\",\r\n\t\"servicios\": [\"telefonia\"]\r\n\t}\r\n"
+					"raw": "{\r\n\t\"fechaInicio\": \"12/04/2018\",\r\n\t\"fechaFin\": \"20/07/2018\",\r\n\t\"servicios\": [\"internet\", \"agua\"]\r\n\t}\r\n"
 				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/alojamientoPorFechasYServicios",
@@ -205,6 +205,96 @@
 			"response": []
 		},
 		{
+			"name": "RFC6 - Uso de AlohAndes para un usuario en especifico",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d65275ed-54e6-4705-a433-273f4f8d4fa7",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/usoAlohAndes/512345603",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"usoAlohAndes",
+						"512345603"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "RFC7 - Periodo con mayor demanda, menos demanda, y mayor ingresos para cierto tipo de alojamiento. ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5182cdb2-24ef-4ef6-87ee-5c69e0458e3d",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/reservas/consultarPorPeriodo/?periodo=MONTH&tipoOferta=OFERTAHOTEL",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"reservas",
+						"consultarPorPeriodo",
+						""
+					],
+					"query": [
+						{
+							"key": "periodo",
+							"value": "MONTH",
+							"equals": true
+						},
+						{
+							"key": "tipoOferta",
+							"value": "OFERTAHOTEL",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "RFC8 - Clientes frecuentes de un alojamiento",
 			"event": [
 				{
@@ -225,7 +315,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/clientesFrecuentes",
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/clientesFrecuentes/20180010",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -235,7 +325,8 @@
 						"AlohAndes1.0",
 						"rest",
 						"personasHabilitadas",
-						"clientesFrecuentes"
+						"clientesFrecuentes",
+						"20180010"
 					]
 				},
 				"description": ""
@@ -243,7 +334,7 @@
 			"response": []
 		},
 		{
-			"name": "RDC9 - Ofertas de alojamiento sin mucha demanda",
+			"name": "RFC9 - Ofertas de alojamiento sin mucha demanda",
 			"event": [
 				{
 					"listen": "test",

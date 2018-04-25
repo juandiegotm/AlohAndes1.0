@@ -119,7 +119,7 @@ public class OfertaService extends AlohAndesService{
 		try {
 			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
 			String fechaInicioText = json.get("fechaInicio").getValueAsText();
-			String fechaFinalText = json.get("fechaInicio").getValueAsText();
+			String fechaFinalText = json.get("fechaFin").getValueAsText();
 			ArrayNode arrayServicios = (ArrayNode) json.get("servicios");
 			List<String> servicios = new ArrayList<>();
 			
@@ -133,7 +133,7 @@ public class OfertaService extends AlohAndesService{
 			Date fechaInicio = formatter.parse(fechaInicioText);
 			Date fechaFinal = formatter.parse(fechaFinalText);
 
-			List<Oferta> ofertas = tm.getOfertasEnRangoDeFechasYCiertosServicios(fechaInicio, fechaFinal, servicios);
+			ArrayNode ofertas = tm.getOfertasEnRangoDeFechasYCiertosServicios(fechaInicio, fechaFinal, servicios);
 			
 			return Response.status(200).entity(ofertas).build();
 		}
@@ -159,5 +159,7 @@ public class OfertaService extends AlohAndesService{
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 	}
+	
+	
 
 }
