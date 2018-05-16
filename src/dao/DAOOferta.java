@@ -196,6 +196,8 @@ public class DAOOferta extends DAOAlohAndes {
 		String timestampFechaFinal = formatter.format(fechaFinal);
 
 
+//		StringBuilder x = new  StringBuilder();
+//		x.append(str)
 
 		sql = String.format("SELECT OFERTA.IDOFERTA, OFERTA.FECHAINICIO, OFERTA.FECHAFINAL, COUNT(*) "
 				+"FROM %1$s.OFERTA INNER JOIN %1$s.SERVICIO ON SERVICIO.IDOFERTA = OFERTA.IDOFERTA "
