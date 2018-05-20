@@ -950,6 +950,335 @@ public class AlohAndesTransactionManager {
 		}
 		return personas;
 	}
+	
+	/**
+	 * RFC10_PARTE1 - Mostrar los usuarios (persona habilitada) que han hecho reservas en el rango de fechas indicado
+ 	*@throws Exception
+	 */
+	public ArrayNode  getConsumoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(String fechaInicio, String fechaFinal, String tipoDeOferta, String datoOrdenar)  throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		ArrayNode personashabilitadas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
 
+			personashabilitadas = dao.getConsumoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
 
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return personashabilitadas;
+	}
+
+	/**
+	 * RFC10_PARTE2 - Mostrar los usuarios (persona habilitada) que han hecho reservas en el rango de fechas indicado
+ 	*@throws Exception
+	 */
+	public ArrayNode  getConsumoDeAlohAndesDadoRangoFechasAgrupadoTipoOferta(String fechaInicio, String fechaFinal)  throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		ArrayNode personashabilitadas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			personashabilitadas = dao.getConsumoDeAlohAndesDadoRangoFechasAgrupadoTipoOferta(fechaInicio, fechaFinal);
+
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return personashabilitadas;
+	}
+
+	
+	/**
+	 * RFC11 - Mostrar los usuarios (persona habilitada) que NO han hecho reservas en el rango de fechas indicado y del tipo de oferta 
+ 	 * @throws Exception
+	 */
+	public ArrayNode  getConsumoNegativoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(String fechaInicio, String fechaFinal, String tipoDeOferta, String datoOrdenar)  throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		ArrayNode personashabilitadas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			personashabilitadas = dao.getConsumoNegativoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
+
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return personashabilitadas;
+	}
+	
+	
+	
+	/**
+	 * RFC12_PARTE1 - Mostrar para cada semana del año las ofertas con MAYOR ocupacion
+ 	 * @throws Exception
+	 */
+	public ArrayNode  getSemanasConOfertasDeMayorOcupacion()  throws Exception {
+		DAOOferta dao = new DAOOferta();
+		ArrayNode ofertas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			ofertas = dao.getSemanasConOfertasDeMayorOcupacion();
+
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ofertas;
+	}
+	
+	
+	/**
+	 * RFC12_PARTE2 - Mostrar para cada semana del año las ofertas con MENOR ocupacion
+ 	 * @throws Exception
+	 */
+	public ArrayNode  getSemanasConOfertasDeMenorOcupacion()  throws Exception {
+		DAOOferta dao = new DAOOferta();
+		ArrayNode ofertas;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			ofertas = dao.getSemanasConOfertasDeMenorOcupacion();
+
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ofertas;
+	}
+	
+	/**
+	 * RFC12_PARTE3 - Mostrar para cada semana del año los operadores MAS solicitados
+ 	 * @throws Exception
+	 */
+	public ArrayNode  getSemanasConOperadoresMasSolicitados()  throws Exception {
+		DAOOperador dao = new DAOOperador();
+		ArrayNode operadores;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			operadores = dao.getSemanasConOperadoresMasSolicitados();
+
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return operadores;
+	}
+	
+	
+	/**
+	 * RFC12_PARTE4 - Mostrar para cada semana del año los operadores MENOS solicitados
+ 	 * @throws Exception
+	 */
+	public ArrayNode  getSemanasConOperadoresMenosSolicitados()  throws Exception {
+		DAOOperador dao = new DAOOperador();
+		ArrayNode operadores;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			operadores = dao.getSemanasConOperadoresMenosSolicitados();
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return operadores;
+	}
+	
+	/**
+	 * RFC13 - Mostrar los buenos clientes con sus categorias
+ 	 * @throws Exception
+	 */
+	public ArrayNode  getBuenosClientes()  throws Exception {
+		DAOPersonaHabilitada dao = new DAOPersonaHabilitada();
+		ArrayNode operadores;
+		try 
+		{
+			this.conn = darConexion();
+			dao.setConn(conn);
+
+			operadores = dao.getBuenosClientes();
+		}
+		catch (SQLException sqlException) {
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null){
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return operadores;
+	}
 }

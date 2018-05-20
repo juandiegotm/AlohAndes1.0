@@ -144,7 +144,6 @@ public class OfertaService extends AlohAndesService{
 		}
 	}
 	
-	
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -160,6 +159,35 @@ public class OfertaService extends AlohAndesService{
 		}
 	}
 	
+	//RFC12_Parte1
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/semanasConOfertasMayorOcupacion")
+	public Response getSemanasConOfertasDeMayorOcupacion() {
+		try {
+			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+			ArrayNode semanasConOfertasMayorOcupacion = tm.getSemanasConOfertasDeMayorOcupacion();
+
+			return Response.status(200).entity(semanasConOfertasMayorOcupacion).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+	}
 	
+	
+	//RFC12_Parte2
+		@GET
+		@Produces({ MediaType.APPLICATION_JSON })
+		@Path("/semanasConOfertasMayorOcupacion")
+		public Response getSemanasConOfertasDeMenorOcupacion() {
+			try {
+				AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+				ArrayNode semanasConOfertasMenorOcupacion = tm.getSemanasConOfertasDeMenorOcupacion();
+
+				return Response.status(200).entity(semanasConOfertasMenorOcupacion).build();
+			} catch (Exception e) {
+				return Response.status(500).entity(doErrorMessage(e)).build();
+			}
+		}
 
 }

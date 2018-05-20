@@ -27,5 +27,35 @@ public class OperadorService extends AlohAndesService {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 	}
+
 	
+	//RFC12_Parte3
+			@GET
+			@Produces({ MediaType.APPLICATION_JSON })
+			@Path("/semanasConOperadoresMasSolicitados")
+			public Response getSemanasConOperadoresMasSolicitados() {
+				try {
+					AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+					ArrayNode semanasConOperadoresMasSolicitados = tm.getSemanasConOperadoresMasSolicitados();
+
+					return Response.status(200).entity(semanasConOperadoresMasSolicitados).build();
+				} catch (Exception e) {
+					return Response.status(500).entity(doErrorMessage(e)).build();
+				}
+			}
+			
+			//RFC12_Parte4
+			@GET
+			@Produces({ MediaType.APPLICATION_JSON })
+			@Path("/semanasConOperadoresMenosSolicitados")
+			public Response getSemanasConOperadoresMenosSolicitados() {
+				try {
+					AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+					ArrayNode semanasConOperadoresMenosSolicitados = tm.getSemanasConOperadoresMenosSolicitados();
+
+					return Response.status(200).entity(semanasConOperadoresMenosSolicitados).build();
+				} catch (Exception e) {
+					return Response.status(500).entity(doErrorMessage(e)).build();
+				}
+			}
 }

@@ -196,8 +196,8 @@ public class DAOOferta extends DAOAlohAndes {
 		String timestampFechaFinal = formatter.format(fechaFinal);
 
 
-//		StringBuilder x = new  StringBuilder();
-//		x.append(str)
+		//		StringBuilder x = new  StringBuilder();
+		//		x.append(str)
 
 		sql = String.format("SELECT OFERTA.IDOFERTA, OFERTA.FECHAINICIO, OFERTA.FECHAFINAL, COUNT(*) "
 				+"FROM %1$s.OFERTA INNER JOIN %1$s.SERVICIO ON SERVICIO.IDOFERTA = OFERTA.IDOFERTA "
@@ -335,8 +335,6 @@ public class DAOOferta extends DAOAlohAndes {
 
 	public Oferta convetirResultSet(ResultSet resultado) throws SQLException {
 
-
-
 		Long idOferta = resultado.getLong("IDOFERTA");
 		Double valor = resultado.getDouble("VALOR");
 		String duracion = resultado.getString("DURACION");
@@ -347,13 +345,129 @@ public class DAOOferta extends DAOAlohAndes {
 		String tipoOferta = resultado.getString("TIPODEOFERTA");
 		Integer cantidadInicial = resultado.getInt("CANTIDADINICIAL");
 
-
-
 		Oferta oferta = new Oferta(idOferta, valor, duracion, fechaInicio, fechaFinal, cantidadDisponible, direccion, tipoOferta, cantidadInicial);
 
 		return oferta;
 	}
 
+	/**
+	 * RFC12_PARTE1 - Mostrar para cada semana del año las ofertas con MAYOR ocupacion
+	 * @param id del usuario de AlohAndes que se quiere consultar
+	 * @return el uso de AlohAndes para el usuario con el id dado por parametro
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	public ArrayNode getSemanasConOfertasDeMayorOcupacion() throws SQLException, Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode ofertas = mapper.createArrayNode();
 
+		String sql = 
+				String.format("SELECT  NRO_SEMANA, OFERTA.IDOFERTA, OFERTA.VALOR, OFERTA.DIRECCION, OFERTA.TIPODEOFERTA, \r\n" + 
+						"\r\n" + 
+						"OFERTA.IDOPERADOR, CANT AS CANTIDAD\r\n" + 
+						"    FROM( %1$s.OFERTA INNER JOIN (\r\n" + 
+						"        SELECT SEMANA_INICIO AS NRO_SEMANA, OFER AS OFERTA_ID, CANT\r\n" + 
+						"        FROM(\r\n" + 
+						"                SELECT SEMANA_INICIO, OFER,ROW_NUMBER() OVER(PARTITION BY SEMANA_INICIO ORDER BY CANT DESC) \r\n" + 
+						"\r\n" + 
+						"AS POSICION, CANT\r\n" + 
+						"                FROM(\r\n" + 
+						"                    SELECT TO_NUMBER(TO_CHAR(TO_DATE( CAST(RESERVA.FECHAINICIORESERVA AS DATE), \r\n" + 
+						"\r\n" + 
+						"'DD/MM/YY'),'WW')) AS SEMANA_INICIO, \r\n" + 
+						"                    RESERVA.IDOFERTA AS OFER, RESERVA.CANTIDAD AS CANT\r\n" + 
+						"                    FROM %1$s.RESERVA\r\n" + 
+						"                    ORDER BY SEMANA_INICIO\r\n" + 
+						"                )\r\n" + 
+						"        )\r\n" + 
+						"    WHERE POSICION = 1)\r\n" + 
+						"    ON OFERTA.IDOFERTA= OFERTA_ID)\r\n" + 
+						"ORDER BY NRO_SEMANA;", USUARIO);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		ResultSet resultado = prepStmt.executeQuery();
+
+		while(resultado.next()){
+			ObjectNode oferta = mapper.createObjectNode();
+
+			Integer nroSemana = resultado.getInt("NRO_SEMANA");
+			Long idOferta = resultado.getLong("IDOFERTA");
+			Integer valor = resultado.getInt("VALOR");
+			String direccion = resultado.getString("DIRECCION");
+			String tipoDeOferta = resultado.getString("TIPODEOFERTA");
+			Long idOperador= resultado.getLong("IDOPERADOR");
+
+			oferta.put("NroSemana", nroSemana);
+			oferta.put("IdOferta:", idOferta);
+			oferta.put("Valor", valor);
+			oferta.put("Direccion", direccion);
+			oferta.put("TipoDeOferta", tipoDeOferta);
+			oferta.put("IdOperador", idOperador);
+
+			ofertas.add(oferta);
+		}
+
+		return ofertas;
+	}
+	
+	/**
+	 * RFC12_PARTE2 - Mostrar para cada semana del año las ofertas con MENOR ocupacion
+	 * @param id del usuario de AlohAndes que se quiere consultar
+	 * @return el uso de AlohAndes para el usuario con el id dado por parametro
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	public ArrayNode getSemanasConOfertasDeMenorOcupacion() throws SQLException, Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode ofertas = mapper.createArrayNode();
+
+		String sql = 
+				String.format("SELECT  NRO_SEMANA, OFERTA.IDOFERTA, OFERTA.VALOR, OFERTA.DIRECCION, OFERTA.TIPODEOFERTA, \r\n" + 
+						"\r\n" + 
+						"OFERTA.IDOPERADOR, CANT AS CANTIDAD\r\n" + 
+						"    FROM( %1$s.OFERTA INNER JOIN (\r\n" + 
+						"        SELECT SEMANA_INICIO AS NRO_SEMANA, OFER AS OFERTA_ID, CANT\r\n" + 
+						"        FROM(\r\n" + 
+						"                SELECT SEMANA_INICIO, OFER,ROW_NUMBER() OVER(PARTITION BY SEMANA_INICIO ORDER BY CANT ASC) \r\n" + 
+						"\r\n" + 
+						"AS POSICION, CANT\r\n" + 
+						"                FROM(\r\n" + 
+						"                    SELECT TO_NUMBER(TO_CHAR(TO_DATE( CAST(RESERVA.FECHAINICIORESERVA AS DATE), \r\n" + 
+						"\r\n" + 
+						"'DD/MM/YY'),'WW')) AS SEMANA_INICIO, \r\n" + 
+						"                    RESERVA.IDOFERTA AS OFER, RESERVA.CANTIDAD AS CANT\r\n" + 
+						"                    FROM %1$s.RESERVA\r\n" + 
+						"                    ORDER BY SEMANA_INICIO\r\n" + 
+						"                )\r\n" + 
+						"        )\r\n" + 
+						"    WHERE POSICION = 1)\r\n" + 
+						"    ON OFERTA.IDOFERTA= OFERTA_ID)\r\n" + 
+						"ORDER BY NRO_SEMANA;", USUARIO);
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		ResultSet resultado = prepStmt.executeQuery();
+
+		while(resultado.next()){
+			ObjectNode oferta = mapper.createObjectNode();
+
+			Integer nroSemana = resultado.getInt("NRO_SEMANA");
+			Long idOferta = resultado.getLong("IDOFERTA");
+			Integer valor = resultado.getInt("VALOR");
+			String direccion = resultado.getString("DIRECCION");
+			String tipoDeOferta = resultado.getString("TIPODEOFERTA");
+			Long idOperador= resultado.getLong("IDOPERADOR");
+
+			oferta.put("NroSemana", nroSemana);
+			oferta.put("IdOferta:", idOferta);
+			oferta.put("Valor", valor);
+			oferta.put("Direccion", direccion);
+			oferta.put("TipoDeOferta", tipoDeOferta);
+			oferta.put("IdOperador", idOperador);
+
+			ofertas.add(oferta);
+		}
+
+		return ofertas;
+	}
 
 }
