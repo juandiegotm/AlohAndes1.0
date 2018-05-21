@@ -1,11 +1,58 @@
 {
 	"info": {
 		"name": "AlohAndesCollection",
-		"_postman_id": "d77403d9-88ee-541b-58e8-c171dfb5ea4a",
+		"_postman_id": "7ba262bb-ce9f-dc12-ae8b-bcdf38b30e09",
 		"description": "Está colección permite realizar las correspondientes pruebas al proyecto AlohAndes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "RF4 - Crea una nueva reserva",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ecd0b10-a298-42b7-a16e-a7bdd7e7d9e3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"fechaInicioReserva\": \"2018-10-1\",\n\t\"fechaFinalReserva\": \"2018-10-10\",\n\t\"cantidad\": 1\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/512345601/reservas/20180004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"512345601",
+						"reservas",
+						"20180004"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "RFC1 - Dinero recibido por cada proveedor",
 			"event": [
@@ -25,7 +72,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/operadores/dineroRecibido",
 					"protocol": "http",
@@ -39,8 +89,7 @@
 						"operadores",
 						"dineroRecibido"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -63,7 +112,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/indiceOcupacion",
 					"protocol": "http",
@@ -77,8 +129,7 @@
 						"ofertas",
 						"indiceOcupacion"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -101,7 +152,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/indiceOcupacion",
 					"protocol": "http",
@@ -115,8 +169,7 @@
 						"ofertas",
 						"indiceOcupacion"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -161,8 +214,7 @@
 						"ofertas",
 						"alojamientoPorFechasYServicios"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -185,7 +237,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/usoAlohAndes",
 					"protocol": "http",
@@ -199,8 +254,7 @@
 						"personasHabilitadas",
 						"usoAlohAndes"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -223,7 +277,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/usoAlohAndes/512345603",
 					"protocol": "http",
@@ -238,8 +295,7 @@
 						"usoAlohAndes",
 						"512345603"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -262,7 +318,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/reservas/consultarPorPeriodo/?periodo=MONTH&tipoOferta=OFERTAHOTEL",
 					"protocol": "http",
@@ -289,8 +348,7 @@
 							"equals": true
 						}
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -313,7 +371,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/clientesFrecuentes/20180010",
 					"protocol": "http",
@@ -328,8 +389,7 @@
 						"clientesFrecuentes",
 						"20180010"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -352,7 +412,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/ofertasConPocaDemanda",
 					"protocol": "http",
@@ -366,8 +429,7 @@
 						"ofertas",
 						"ofertasConPocaDemanda"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -398,8 +460,7 @@
 						"reservas",
 						"reservaColectiva"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -408,7 +469,10 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/reservas/reservaColectiva/1",
 					"protocol": "http",
@@ -423,8 +487,7 @@
 						"reservaColectiva",
 						"1"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		}

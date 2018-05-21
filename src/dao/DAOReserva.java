@@ -23,49 +23,35 @@ public class DAOReserva extends DAOAlohAndes{
 	public DAOReserva () {
 		super();
 	}
+	
+	public String formatearFecha(Date fecha) {
+		Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+		return  formatter.format(fecha);
+	}
 
 	//----------------------------------------------------------------------------------------------------------------------------------
 	// METODOS DE COMUNICACION CON LA BASE DE DATOS
 	//----------------------------------------------------------------------------------------------------------------------------------
-
-
-	public void crearReserva(Long idPersona, Long idOferta, Reserva reserva) throws SQLException, Exception {
-		Format formatter = new SimpleDateFormat("dd-MM-yyyy");
-		String timestampInString = formatter.format(reserva.getFechaReserva());
-
-
-		String sql = String.format("INSERT INTO %1$s.RESERVA (IDOFERTA, IDPERSONAHABILITADA, FECHARESERVA, ESTADORESERVA, IDRESERVA) VALUES (%2$d, %3$d, TO_DATE('%4$s', 'DD-MM-YYYY'), '%5$s', %6$d)",
-				USUARIO,
-				idOferta,
-				idPersona,
-				timestampInString,
-				reserva.getEstadoReserva(),
-				reserva.getIdReserva());
-
-		PreparedStatement queary = conn.prepareStatement(sql);
-		recursos.add(queary);
-		System.out.println(sql);
-		ResultSet resultado = queary.executeQuery();
-	}
 	
-	public void crearReservaIndividualColectiva(Long idPersona, Long idOferta, Reserva reserva, Long idReservaColectiva) throws SQLException, Exception {
-		Format formatter = new SimpleDateFormat("dd-MM-yyyy");
-		String timestampInString = formatter.format(reserva.getFechaReserva());
-
-
-		String sql = String.format("INSERT INTO %1$s.RESERVA (IDOFERTA, IDPERSONAHABILITADA, FECHARESERVA, ESTADORESERVA, IDRESERVA, IDRESERVACOLECTIVA) VALUES (%2$d, %3$d, TO_DATE('%4$s', 'DD-MM-YYYY'), '%5$s', %6$d, %7$d)",
+	public void crearReserva(Long idPersona, Long idOferta, Reserva reserva, Long idReservaColectiva) throws SQLException, Exception {
+		
+		String timestampIniciopInString = formatearFecha(reserva.getFechaInicioReserva());
+		String timestampFinalInString = formatearFecha(reserva.getFechaFinalReserva());
+		
+		String sql = String.format("INSERT INTO %1$s.RESERVA (IDOFERTA, IDPERSONAHABILITADA, FECHAINICIORESERVA, FECHAFINALRESERVA, ESTADORESERVA, IDRESERVACOLECTIVA, CANTIDAD) VALUES (%2$d, %3$d, TO_DATE('%4$s', 'DD-MM-YYYY'), TO_DATE('%5$s', 'DD-MM-YYYY'), '%6$s', %7$d, %8$d)",
 				USUARIO,
 				idOferta,
 				idPersona,
-				timestampInString,
-				reserva.getEstadoReserva(),
-				reserva.getIdReserva(), 
-				idReservaColectiva);
+				timestampIniciopInString,
+				timestampFinalInString,
+				Reserva.EN_ESPERA, 
+				idReservaColectiva,
+				reserva.getCantidad());
 
 		PreparedStatement queary = conn.prepareStatement(sql);
 		recursos.add(queary);
 		System.out.println(sql);
-		ResultSet resultado = queary.executeQuery();
+		queary.executeQuery();
 	}
 
 	public ObjectNode crearReservaColectiva(ReservaColectiva reservaColectiva) throws SQLException, Exception  {
@@ -74,8 +60,6 @@ public class DAOReserva extends DAOAlohAndes{
 		ObjectNode respuesta = mapper.createObjectNode();
 
 		try {
-			//Inicio de la transacción
-			conn.setAutoCommit(false);
 			Format formatter = new SimpleDateFormat("dd-MM-yyyy");
 			String timestampInString = formatter.format(reservaColectiva.getFechaReserva());
 			
@@ -131,8 +115,8 @@ public class DAOReserva extends DAOAlohAndes{
 				
 				
 				while(cantidadActual > 0) {
-					Reserva reserva = new Reserva(new Long(inicioLlave), reservaColectiva.getFechaReserva(), reservaColectiva.getEstadoReserva());
-					crearReservaIndividualColectiva(reservaColectiva.getIdPersonaHabilitada(), idOferta, reserva, reservaColectiva.getIdReservaColectiva());
+					Reserva reserva = new Reserva(new Long(inicioLlave), reservaColectiva.getFechaInicioReserva(), reservaColectiva.getFechaFinalReserva(), reservaColectiva.getEstadoReserva(), 0);
+					crearReserva(reservaColectiva.getIdPersonaHabilitada(), idOferta, reserva, reservaColectiva.getIdReservaColectiva());
 					cantidadActual--;
 					restante--;
 					inicioLlave++;
@@ -151,20 +135,14 @@ public class DAOReserva extends DAOAlohAndes{
 				}
 				
 			}
-			
-			
+						
 			System.out.println("TODAS LAS RESERVAS FUERON REALIZADAS CON EXITO");
-			
-			System.out.println("PASO FINAL: HACIENDO COMMIT A LA BASE DE DATOS");
-			conn.commit();
+
 
 		}
 
 		catch(Exception e) {
-			System.out.println("Rollback");
 			try {
-				//deshace todos los cambios realizados en los datos
-				conn.rollback();
 				throw e;
 			} catch (SQLException ex1) {
 				System.err.println( "No se pudo deshacer" + ex1.getMessage() ); 
@@ -372,9 +350,11 @@ public class DAOReserva extends DAOAlohAndes{
 
 		Long idReserva = resultado.getLong("IDRESERVA");
 		String estado = resultado.getString("ESTADORESERVA");
-		Date fechaReserva = new Date(resultado.getTimestamp("FECHARESERVA").getDate());
+		Date fechaInicioReserva = new Date(resultado.getTimestamp("FECHAINICIORESERVA").getDate());
+		Date fechaFinalReserva = new Date(resultado.getTimestamp("FECHAFINALRESERVA").getDate());
+		Integer cantidad = resultado.getInt("CANTIDAD");
 
-		Reserva reserva = new Reserva(idReserva, fechaReserva, estado);
+		Reserva reserva = new Reserva(idReserva, fechaInicioReserva, fechaFinalReserva, estado, cantidad);
 
 		return reserva;
 

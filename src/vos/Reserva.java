@@ -8,7 +8,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 
 
-
 public class Reserva {
 	
 	public final static String PAGADO = "PAGADO";
@@ -16,13 +15,19 @@ public class Reserva {
 	public final static String CANCELADO = "CANCELADO";
 	public final static String EN_CURSO = "EN CURSO";
 	public final static String FINALIZADO = "FINALIZADO";
+	public final static String EN_ESPERA = "EN_ESPERA";
 	
 	@JsonProperty(value = "idReserva")
 	private Long idReserva;
 	
-	@JsonProperty(value = "fechaReserva")
-	//@JsonFormat(pattern =  "dd-mm-yyyy")
-	private Date fechaReserva;
+	@JsonProperty(value = "cantidad")
+	private  Integer cantidad;
+	
+	@JsonProperty(value = "fechaInicioReserva")
+	private Date fechaInicioReserva;
+	
+	@JsonProperty(value = "fechaFinalReserva")
+	private Date fechaFinalReserva;
 	
 	@JsonProperty(value = "estadoReserva")
 	private String estadoReserva;
@@ -35,19 +40,22 @@ public class Reserva {
 		//Dummy constructor
 	}
 	
-	public Reserva(@JsonProperty(value = "idReserva") Long idReserva, @JsonProperty(value = "fechaReserva") Date fechaReserva, 
-			@JsonProperty(value = "estadoReserva") String estadoReserva) {
+	public Reserva(@JsonProperty(value = "idReserva") Long idReserva, @JsonProperty(value = "fechaInicioReserva") Date fechaInicioReserva,
+			@JsonProperty(value = "fechaFinalReserva") Date fechaFinalReserva,
+			@JsonProperty(value = "estadoReserva") String estadoReserva, @JsonProperty(value = "cantidad") Integer cantidad) {
 		this.idReserva = idReserva;
-		this.fechaReserva = fechaReserva;
+		this.fechaInicioReserva = fechaInicioReserva;
+		this.fechaFinalReserva = fechaFinalReserva;
 		this.estadoReserva = estadoReserva;
+		this.cantidad = cantidad;
 	}
 
-	public Date getFechaReserva() {
-		return fechaReserva;
+	public Date getFechaInicioReserva() {
+		return fechaInicioReserva;
 	}
 
-	public void setFechaReserva(Date fechaReserva) {
-		this.fechaReserva = fechaReserva;
+	public void setFechaInicioReserva(Date fechaReserva) {
+		this.fechaInicioReserva = fechaReserva;
 	}
 
 	public String getEstadoReserva() {
@@ -81,6 +89,25 @@ public class Reserva {
 	public void setOferta(Oferta oferta) {
 		this.oferta = oferta;
 	}
+
+	public Integer getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public Date getFechaFinalReserva() {
+		return fechaFinalReserva;
+	}
+
+	public void setFechaFinalReserva(Date fechaFinalReserva) {
+		this.fechaFinalReserva = fechaFinalReserva;
+	}
+	
+	
+	
 	
 	
 

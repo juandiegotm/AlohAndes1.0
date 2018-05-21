@@ -20,9 +20,7 @@ public class PersonaHabilitadaReservaService extends AlohAndesService {
 	public Response crearReserva(Reserva reserva, @PathParam("idPersona") Long idPersona, @PathParam("idOferta") Long idOferta) {
 		try {
 			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
-			
-			tm.crearReserva(idPersona, idOferta, reserva);
-			
+			tm.crearReserva(idPersona, idOferta, reserva);			
 			return Response.status(200).build();
 		}
 		
