@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -119,28 +120,66 @@ public class PersonaHabilitadaService extends AlohAndesService {
 		}
 	}
 
+	//RFC10_Parte1
+		@GET
+		@Produces({ MediaType.APPLICATION_JSON })
+		@Path("/consumoAlohAndesFechas-Oferta-Orden")
+		public Response getConsumoDeAlohAndesParte1(@QueryParam("fechaInicio") String fechaInicio, @QueryParam("fechaFinal") String fechaFinal,
+				@QueryParam("tipoOferta") String tipoOferta, @QueryParam("orden") String orden) {
+			try {
+				AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+				ArrayNode consumoAlohAndesFechaOfertaOrden = tm.getConsumoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(fechaInicio, fechaFinal, tipoOferta, orden);
 
+				return Response.status(200).entity(consumoAlohAndesFechaOfertaOrden).build();
+			} catch (Exception e) {
+				return Response.status(500).entity(doErrorMessage(e)).build();
+			}
+		}
 		
-//		@POST
-//		@Path("{idPersona: \\d+}/reservas/{idOferta: \\d+}")
-//		@Consumes(MediaType.APPLICATION_JSON)
-//	    public Response crearReserva(Reserva reserva, @PathParam("idPersona") Long idPersona, @PathParam("idOferta")Long idOferta) {
-//	        try {
-//	            ReservaTransactionManager tm = new ReservaTransactionManager(getPath());
-//	
-//	            tm.crearReserva(idPersona, idOferta, reserva);
-//	
-//	            return Response.status(200).build();
-//	        } catch (Exception e) {
-//	            return Response.status(500).entity(doErrorMessage(e)).build();
-//	        }
-//	    }
-//	    
-//	    @GET
-//	    @Path("funciona")
-//	    @Produces("text/plain")
-//	    public Response funcion() {
-//	    	return Response.status(200).entity("Hola mundo").build();
-//	    }
+		//RFC10_Parte2
+		@GET
+		@Produces({ MediaType.APPLICATION_JSON })
+		@Path("/consumoAlohAndesFechas-AgrupadoOferta")
+		public Response getConsumoDeAlohAndesParte2(@QueryParam("fechaInicio") String fechaInicio, @QueryParam("fechaFinal") String fechaFinal) {
+			try {
+				AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+				ArrayNode consumoAlohAndesFechasAgrupadoOferta = tm.getConsumoDeAlohAndesDadoRangoFechasAgrupadoTipoOferta(fechaInicio, fechaFinal);
+
+				return Response.status(200).entity(consumoAlohAndesFechasAgrupadoOferta).build();
+			} catch (Exception e) {
+				return Response.status(500).entity(doErrorMessage(e)).build();
+			}
+		}
+		
+		//RFC11
+		@GET
+		@Produces({ MediaType.APPLICATION_JSON })
+		@Path("/consumoNegativoAlohAndesFechas-Oferta-Orden")
+		public Response getConsumoNegativoDeAlohAndes(@QueryParam("fechaInicio") String fechaInicio, @QueryParam("fechaFinal") String fechaFinal,
+				@QueryParam("tipoOferta") String tipoOferta, @QueryParam("orden") String orden) {
+			try {
+				AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+				ArrayNode consumoNegativoAlohAndesFechaOfertaOrden = tm.getConsumoNegativoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(fechaInicio, fechaFinal, tipoOferta, orden);
+
+				return Response.status(200).entity(consumoNegativoAlohAndesFechaOfertaOrden).build();
+			} catch (Exception e) {
+				return Response.status(500).entity(doErrorMessage(e)).build();
+			}
+		}
+		
+		//RFC13
+			@GET
+			@Produces({ MediaType.APPLICATION_JSON })
+			@Path("/consultarBuenosClientes")
+			public Response getBuenosClientes() {
+				try {
+					AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
+					ArrayNode buenosClientes = tm.getBuenosClientes();
+
+					return Response.status(200).entity(buenosClientes).build();
+				} catch (Exception e) {
+					return Response.status(500).entity(doErrorMessage(e)).build();
+				}
+			}
 
 }
