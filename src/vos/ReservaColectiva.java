@@ -9,8 +9,11 @@ public class ReservaColectiva {
 	@JsonProperty(value = "idReservaColectiva")
 	private Long idReservaColectiva;
 	
-	@JsonProperty(value = "fechaReserva")
-	private Date fechaReserva;
+	@JsonProperty(value = "fechaInicioReserva")
+	private Date fechaInicioReserva;
+	
+	@JsonProperty(value = "fechaFinalReserva")
+	private Date fechaFinalReserva;
 	
 	@JsonProperty(value = "estadoReserva")
 	private String estadoReserva;
@@ -30,16 +33,18 @@ public class ReservaColectiva {
 	/**
 	 * Constructor por defecto de la clase ReservaColectiva
 	 * @param idReservaColectiva
-	 * @param fechaReserva
+	 * @param fechaInicioReserva
 	 * @param estadoReserva
 	 * @param cantidad
 	 * @param servicios
 	 */
-	public ReservaColectiva(@JsonProperty(value = "idReservaColectiva")Long idReservaColectiva, @JsonProperty(value = "fechaReserva") Date fechaReserva, @JsonProperty(value = "estadoReserva") String estadoReserva, 
+	public ReservaColectiva(@JsonProperty(value = "idReservaColectiva")Long idReservaColectiva, @JsonProperty(value = "fechaInicioReserva") Date fechaInicioReserva, 
+			@JsonProperty(value = "fechaFinalReserva") Date fechaFinalReserva, @JsonProperty(value = "estadoReserva") String estadoReserva, 
 			@JsonProperty(value = "cantidad") Integer cantidad, @JsonProperty(value = "servicios")List<String> servicios, @JsonProperty(value = "tipoDeAlojamiento") String tipoDeAlojamiento,
 			@JsonProperty(value = "idPersonaHabilitada") Long idPersonaHabilitada) {
 		this.idReservaColectiva = idReservaColectiva;
-		this.fechaReserva = fechaReserva;
+		this.fechaInicioReserva = fechaInicioReserva;
+		this.fechaFinalReserva = fechaFinalReserva;
 		this.estadoReserva = estadoReserva;
 		this.cantidad = cantidad;
 		this.servicios = servicios;
@@ -72,14 +77,31 @@ public class ReservaColectiva {
 	 * @return the fechaReserva
 	 */
 	public Date getFechaReserva() {
-		return fechaReserva;
+		return fechaInicioReserva;
 	}
 
 	/**
 	 * @param fechaReserva the fechaReserva to set
 	 */
 	public void setFechaReserva(Date fechaReserva) {
-		this.fechaReserva = fechaReserva;
+		this.fechaInicioReserva = fechaReserva;
+	}
+	
+	
+	public Date getFechaInicioReserva() {
+		return fechaInicioReserva;
+	}
+
+	public void setFechaInicioReserva(Date fechaInicioReserva) {
+		this.fechaInicioReserva = fechaInicioReserva;
+	}
+
+	public Date getFechaFinalReserva() {
+		return fechaFinalReserva;
+	}
+
+	public void setFechaFinalReserva(Date fechaFinalReserva) {
+		this.fechaFinalReserva = fechaFinalReserva;
 	}
 
 	/**

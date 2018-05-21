@@ -452,18 +452,25 @@ public class AlohAndesTransactionManager {
 	public void crearReserva(Long idPersona, Long idOferta, Reserva reserva) throws Exception {
 
 		DAOReserva daoReserva = new DAOReserva();
+		DAOOferta daoOferta = new DAOOferta();
+		DAOPersonaHabilitada daoPersonaHabilitada = new DAOPersonaHabilitada();
 
 		//Agregar busqueda de servicio
 		try {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
+			daoOferta.setConn(conn);
+			daoPersonaHabilitada.setConn(conn);
 
-			PersonaHabilitada personaBuscada = buscarPersonaHabilitadaPorId(idPersona);
-			Oferta ofertaRequerida = buscarOfertaPorId(idOferta);
+			this.conn.setAutoCommit(false);
+			
+			PersonaHabilitada personaBuscada = daoPersonaHabilitada.buscarPersonaHabilitadaPorId(idPersona);
+			
 			if(personaBuscada == null) {
 				throw new Exception("El usuario " + idPersona + " no existe.");
 			}
-
+			
+			Oferta ofertaRequerida = daoOferta.buscarOfertaPorId(idOferta);
 			if(ofertaRequerida == null) {
 				throw new Exception("La oferta con id: " + idOferta + " no existe");
 			}
@@ -471,27 +478,41 @@ public class AlohAndesTransactionManager {
 			if(ofertaRequerida.getCantidadDisponible() == 0) {
 				throw new Exception("La oferta no está disponible");
 			}
-
-			//Se requeries disminuir en uno la oferta
-
-			daoReserva.crearReserva(idPersona, idOferta, reserva);
+			
+			if(ofertaRequerida.getCantidadDisponible() < reserva.getCantidad()) {
+				throw new Exception("No hay una cantidad suficiente para reservar");
+			}
+					
+			daoReserva.crearReserva(idPersona, idOferta, reserva, null);
+			daoOferta.actualizarCantidadReserva(idOferta, ofertaRequerida.getCantidadDisponible()-reserva.getCantidad());
+			
+			this.conn.commit();
 
 		}
 
 		catch (SQLException sqlException) {
+			System.out.println("Rollback");
+			this.conn.rollback();
 			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
 			sqlException.printStackTrace();
+			
+			
 			throw sqlException;
 		} 
 		catch (Exception exception) {
+			System.out.println("Rollback");
+			this.conn.rollback();
 			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
 			exception.printStackTrace();
 			throw exception;
 		} 
 		finally {
 			try {
+				
 				daoReserva.cerrarRecursos();
 				if(this.conn!=null){
+					
+					//deshace todos los cambios realizados en los datos
 					this.conn.close();					
 				}
 			}
@@ -513,16 +534,26 @@ public class AlohAndesTransactionManager {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 
+			//Inicio de la transacción
+			conn.setAutoCommit(false);
 			respuesta = daoReserva.crearReservaColectiva(reservaColectiva);
+			System.out.println("PASO FINAL: HACIENDO COMMIT A LA BASE DE DATOS");
+			conn.commit();
 
 		}
 
 		catch (SQLException sqlException) {
+			System.out.println("Rollback");
+			//deshace todos los cambios realizados en los datos
+			conn.rollback();
 			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
 			sqlException.printStackTrace();
 			throw sqlException;
 		} 
 		catch (Exception exception) {
+			System.out.println("Rollback");
+			//deshace todos los cambios realizados en los datos
+			conn.rollback();
 			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
 			exception.printStackTrace();
 			throw exception;

@@ -20,6 +20,16 @@ import vos.PersonaHabilitada;
 public class DAOOferta extends DAOAlohAndes {
 
 
+	
+	public void actualizarCantidadReserva(Long idOferta, int cantidad) throws SQLException, Exception{
+		String sql = String.format("UPDATE %1$s.OFERTA S SET S.CANTIDADDISPONIBLE = %2$d WHERE S.IDOFERTA = %3$d", USUARIO, cantidad, idOferta);
+		
+		PreparedStatement queary = conn.prepareStatement(sql);
+		ResultSet resultado = queary.executeQuery();
+		recursos.add(queary);
+	}
+	
+	
 	/**
 	 * Retorna todas las ofertas (tanto habilitadas como no) de AlohAndes
 	 * @return todas las ofertas de AlohAndes
