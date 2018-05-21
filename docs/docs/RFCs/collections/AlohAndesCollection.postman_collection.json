@@ -1,7 +1,7 @@
 {
 	"info": {
+		"_postman_id": "1b916bba-3ac2-42d5-9282-1b54034b3dcc",
 		"name": "AlohAndesCollection",
-		"_postman_id": "7ba262bb-ce9f-dc12-ae8b-bcdf38b30e09",
 		"description": "Está colección permite realizar las correspondientes pruebas al proyecto AlohAndes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -32,7 +32,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"fechaInicioReserva\": \"2018-10-1\",\n\t\"fechaFinalReserva\": \"2018-10-10\",\n\t\"cantidad\": 1\n}"
+					"raw": "{\n\t\"fechaInicioReserva\": \"2018-10-1\",\n\t\"fechaFinalReserva\": \"2018-10-10\",\n\t\"cantidad\": 11\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/512345601/reservas/20180004",
@@ -48,6 +48,50 @@
 						"512345601",
 						"reservas",
 						"20180004"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RF5 - Eliminar una reserva",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ecd0b10-a298-42b7-a16e-a7bdd7e7d9e3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/512345601/reservas/18",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"512345601",
+						"reservas",
+						"18"
 					]
 				}
 			},
@@ -339,13 +383,11 @@
 					"query": [
 						{
 							"key": "periodo",
-							"value": "MONTH",
-							"equals": true
+							"value": "MONTH"
 						},
 						{
 							"key": "tipoOferta",
-							"value": "OFERTAHOTEL",
-							"equals": true
+							"value": "OFERTAHOTEL"
 						}
 					]
 				}

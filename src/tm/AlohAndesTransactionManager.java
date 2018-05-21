@@ -449,6 +449,14 @@ public class AlohAndesTransactionManager {
 	// METODOS TRANSACCIONALES DE RESERVA. 
 	//----------------------------------------------------------------------------------------------------------------------------------
 
+	/**
+	 * RF4 - Crea una nueva reserva de la oferta pasada por parametro. 
+	 * @param idPersona de la persona que realiza la petición. 
+	 * @param idOferta de la oferta que se quiere reservar. 
+	 * @param reserva con datos como la fecha de inicio, la fecha final,
+	 * y la cantidad que se quiere reservar. 
+	 * @throws Exception
+	 */
 	public void crearReserva(Long idPersona, Long idOferta, Reserva reserva) throws Exception {
 
 		DAOReserva daoReserva = new DAOReserva();
@@ -513,6 +521,76 @@ public class AlohAndesTransactionManager {
 				if(this.conn!=null){
 
 					//deshace todos los cambios realizados en los datos
+					this.conn.close();					
+				}
+			}
+			catch (SQLException exception) {
+				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	
+	/**
+	 * RF5 - Elimina una reserva asociada la usuario y con el id pasados por parametros.
+	 * @param idPersona de la persona asociada con la reserva.
+	 * @param idReserva de la reserva que se quiere eliminar. 
+	 * @throws Exception
+	 */
+	public void eliminarReserva(Long idPersona, Long idReserva) throws Exception {
+
+		DAOReserva daoReserva = new DAOReserva();
+		DAOPersonaHabilitada daoPersonaHabilitada = new DAOPersonaHabilitada();
+		DAOOferta daoOferta = new DAOOferta();
+		//Agregar busqueda de servicio
+		try {
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			daoPersonaHabilitada.setConn(conn);
+			daoOferta.setConn(conn);
+
+
+			conn.setAutoCommit(false);
+
+			PersonaHabilitada personaBuscada = daoPersonaHabilitada.buscarPersonaHabilitadaPorId(idPersona); ;
+			if(personaBuscada == null) 
+				throw new Exception("El usuario " + idPersona + " no existe.");
+
+			Reserva reservaBuscada = daoReserva.darReserva(idReserva);
+
+			if(reservaBuscada == null) 
+				throw new Exception("El usuario no tiene ninguna reserva asociada con el id "+ idReserva);
+
+			Oferta ofertaBuscada = daoOferta.ofertaDeReserva(idReserva); //Esto se hace primero, porque luego de eliminar la reserva, no se puede obtener esta información. 
+			daoReserva.deleteReserva(idReserva);
+			daoOferta.actualizarCantidadReserva(ofertaBuscada.getIdOferta(), reservaBuscada.getCantidad()+ofertaBuscada.getCantidadDisponible());
+
+			conn.commit();
+
+		}
+
+		catch (SQLException sqlException) {
+			System.out.println("ROLLBACK");
+			conn.rollback();
+
+			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
+			sqlException.printStackTrace();
+			throw sqlException;
+		} 
+		catch (Exception exception) {
+			System.out.println("ROLLBACK");
+			conn.rollback();
+
+			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
+		} 
+		finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null){
 					this.conn.close();					
 				}
 			}
@@ -653,69 +731,7 @@ public class AlohAndesTransactionManager {
 		return reservas;
 	}
 
-	public void eliminarReserva(Long idPersona, Long idReserva) throws Exception {
 
-		DAOReserva daoReserva = new DAOReserva();
-		DAOPersonaHabilitada daoPersonaHabilitada = new DAOPersonaHabilitada();
-		DAOOferta daoOferta = new DAOOferta();
-		//Agregar busqueda de servicio
-		try {
-			this.conn = darConexion();
-			daoReserva.setConn(conn);
-			daoPersonaHabilitada.setConn(conn);
-			daoOferta.setConn(conn);
-			
-
-			conn.setAutoCommit(false);
-
-			PersonaHabilitada personaBuscada = daoPersonaHabilitada.buscarPersonaHabilitadaPorId(idPersona); ;
-			if(personaBuscada == null) 
-				throw new Exception("El usuario " + idPersona + " no existe.");
-
-			Reserva reservaBuscada = daoReserva.darReserva(idReserva);
-
-			if(reservaBuscada == null) 
-				throw new Exception("El usuario no tiene ninguna reserva asociada con el id "+ idReserva);
-
-			Oferta ofertaBuscada = daoOferta.ofertaDeReserva(idReserva); //Esto se hace primero, porque luego de eliminar
-																	     //la reserva, no se puede obtener esta información. 
-			daoReserva.deleteReserva(idReserva);
-			daoOferta.actualizarCantidadReserva(ofertaBuscada.getIdOferta(), reservaBuscada.getCantidad()+ofertaBuscada.getCantidadDisponible());
-
-			conn.commit();
-
-		}
-
-		catch (SQLException sqlException) {
-			System.out.println("ROLLBACK");
-			conn.rollback();
-
-			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
-			sqlException.printStackTrace();
-			throw sqlException;
-		} 
-		catch (Exception exception) {
-			System.out.println("ROLLBACK");
-			conn.rollback();
-
-			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
-			exception.printStackTrace();
-			throw exception;
-		} 
-		finally {
-			try {
-				daoReserva.cerrarRecursos();
-				if(this.conn!=null){
-					this.conn.close();					
-				}
-			}
-			catch (SQLException exception) {
-				System.err.println("[EXCEPTION] SQLException While Closing Resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-	}
 
 	/**
 	 * RFC7
