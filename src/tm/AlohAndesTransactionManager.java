@@ -463,13 +463,13 @@ public class AlohAndesTransactionManager {
 			daoPersonaHabilitada.setConn(conn);
 
 			this.conn.setAutoCommit(false);
-			
+
 			PersonaHabilitada personaBuscada = daoPersonaHabilitada.buscarPersonaHabilitadaPorId(idPersona);
-			
+
 			if(personaBuscada == null) {
 				throw new Exception("El usuario " + idPersona + " no existe.");
 			}
-			
+
 			Oferta ofertaRequerida = daoOferta.buscarOfertaPorId(idOferta);
 			if(ofertaRequerida == null) {
 				throw new Exception("La oferta con id: " + idOferta + " no existe");
@@ -478,14 +478,14 @@ public class AlohAndesTransactionManager {
 			if(ofertaRequerida.getCantidadDisponible() == 0) {
 				throw new Exception("La oferta no está disponible");
 			}
-			
+
 			if(ofertaRequerida.getCantidadDisponible() < reserva.getCantidad()) {
 				throw new Exception("No hay una cantidad suficiente para reservar");
 			}
-					
+
 			daoReserva.crearReserva(idPersona, idOferta, reserva, null);
 			daoOferta.actualizarCantidadReserva(idOferta, ofertaRequerida.getCantidadDisponible()-reserva.getCantidad());
-			
+
 			this.conn.commit();
 
 		}
@@ -495,8 +495,8 @@ public class AlohAndesTransactionManager {
 			this.conn.rollback();
 			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
 			sqlException.printStackTrace();
-			
-			
+
+
 			throw sqlException;
 		} 
 		catch (Exception exception) {
@@ -508,10 +508,10 @@ public class AlohAndesTransactionManager {
 		} 
 		finally {
 			try {
-				
+
 				daoReserva.cerrarRecursos();
 				if(this.conn!=null){
-					
+
 					//deshace todos los cambios realizados en los datos
 					this.conn.close();					
 				}
@@ -611,7 +611,7 @@ public class AlohAndesTransactionManager {
 			}
 		}
 
-		}
+	}
 
 	public List<Reserva> darReservasPorOferta(Long idOferta) throws Exception {
 
@@ -656,26 +656,48 @@ public class AlohAndesTransactionManager {
 	public void eliminarReserva(Long idPersona, Long idReserva) throws Exception {
 
 		DAOReserva daoReserva = new DAOReserva();
+		DAOPersonaHabilitada daoPersonaHabilitada = new DAOPersonaHabilitada();
+		DAOOferta daoOferta = new DAOOferta();
 		//Agregar busqueda de servicio
 		try {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
+			daoPersonaHabilitada.setConn(conn);
+			daoOferta.setConn(conn);
+			
 
-			PersonaHabilitada personaBuscada = buscarPersonaHabilitadaPorId(idPersona);
-			if(personaBuscada == null) {
+			conn.setAutoCommit(false);
+
+			PersonaHabilitada personaBuscada = daoPersonaHabilitada.buscarPersonaHabilitadaPorId(idPersona); ;
+			if(personaBuscada == null) 
 				throw new Exception("El usuario " + idPersona + " no existe.");
-			}
 
+			Reserva reservaBuscada = daoReserva.darReserva(idReserva);
+
+			if(reservaBuscada == null) 
+				throw new Exception("El usuario no tiene ninguna reserva asociada con el id "+ idReserva);
+
+			Oferta ofertaBuscada = daoOferta.ofertaDeReserva(idReserva); //Esto se hace primero, porque luego de eliminar
+																	     //la reserva, no se puede obtener esta información. 
 			daoReserva.deleteReserva(idReserva);
+			daoOferta.actualizarCantidadReserva(ofertaBuscada.getIdOferta(), reservaBuscada.getCantidad()+ofertaBuscada.getCantidadDisponible());
+
+			conn.commit();
 
 		}
 
 		catch (SQLException sqlException) {
+			System.out.println("ROLLBACK");
+			conn.rollback();
+
 			System.err.println("[EXCEPTION] SQLException:" + sqlException.getMessage());
 			sqlException.printStackTrace();
 			throw sqlException;
 		} 
 		catch (Exception exception) {
+			System.out.println("ROLLBACK");
+			conn.rollback();
+
 			System.err.println("[EXCEPTION] General Exception:" + exception.getMessage());
 			exception.printStackTrace();
 			throw exception;

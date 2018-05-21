@@ -14,22 +14,23 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import oracle.net.aso.q;
 import vos.Oferta;
 import vos.PersonaHabilitada;
 
 public class DAOOferta extends DAOAlohAndes {
 
 
-	
+
 	public void actualizarCantidadReserva(Long idOferta, int cantidad) throws SQLException, Exception{
 		String sql = String.format("UPDATE %1$s.OFERTA S SET S.CANTIDADDISPONIBLE = %2$d WHERE S.IDOFERTA = %3$d", USUARIO, cantidad, idOferta);
-		
+
 		PreparedStatement queary = conn.prepareStatement(sql);
 		ResultSet resultado = queary.executeQuery();
 		recursos.add(queary);
 	}
-	
-	
+
+
 	/**
 	 * Retorna todas las ofertas (tanto habilitadas como no) de AlohAndes
 	 * @return todas las ofertas de AlohAndes
@@ -55,6 +56,24 @@ public class DAOOferta extends DAOAlohAndes {
 
 	}
 
+
+	public Oferta ofertaDeReserva(Long idReserva) throws Exception, SQLException {
+		String sql = String.format("SELECT * FROM %1$s.RESERVA r WHERE r.IDRESERVA = %2$d", USUARIO, idReserva);
+		System.out.println(sql);
+		PreparedStatement query1 = conn.prepareStatement(sql);
+		recursos.add(query1);
+		ResultSet resultado1 = query1.executeQuery();
+
+		Long idOferta = null;
+		//Obtiene el id de la oferta
+		while(resultado1.next())
+			idOferta =  resultado1.getLong("IDOFERTA");
+		System.out.println("LA OFERTA ES: " + idOferta);
+
+		return buscarOfertaPorId(idOferta);
+
+	}
+
 	/**
 	 * Busca una oferta de alojamiento por ID. Retorna la oferta si la encuetra, null de lo contrario.
 	 * @param id de la oferta que se está buscando.
@@ -65,8 +84,9 @@ public class DAOOferta extends DAOAlohAndes {
 	public Oferta buscarOfertaPorId(Long id) throws SQLException, Exception {
 		Oferta ofertaBuscada = null;
 
-		String sql = String.format("SELECT * FROM %1$s.OFERTA WHERE IDOFERTA='%2$d'", USUARIO, id);
-
+		String sql = String.format("SELECT * FROM %1$s.OFERTA WHERE IDOFERTA=%2$d", USUARIO, id);
+		System.out.println(sql);
+		
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet resultado = prepStmt.executeQuery();
@@ -206,8 +226,8 @@ public class DAOOferta extends DAOAlohAndes {
 		String timestampFechaFinal = formatter.format(fechaFinal);
 
 
-//		StringBuilder x = new  StringBuilder();
-//		x.append(str)
+		//		StringBuilder x = new  StringBuilder();
+		//		x.append(str)
 
 		sql = String.format("SELECT OFERTA.IDOFERTA, OFERTA.FECHAINICIO, OFERTA.FECHAFINAL, COUNT(*) "
 				+"FROM %1$s.OFERTA INNER JOIN %1$s.SERVICIO ON SERVICIO.IDOFERTA = OFERTA.IDOFERTA "

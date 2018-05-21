@@ -35,7 +35,6 @@ public class PersonaHabilitadaReservaService extends AlohAndesService {
 	public Response eliminarReserva(@PathParam("idPersona") Long idPersona, @PathParam("idReserva") Long idReserva) {
 		try {
 			AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
-			
 			tm.eliminarReserva(idPersona, idReserva);
 			return Response.status(200).build();
 		}

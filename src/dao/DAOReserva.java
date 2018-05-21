@@ -33,6 +33,39 @@ public class DAOReserva extends DAOAlohAndes{
 	// METODOS DE COMUNICACION CON LA BASE DE DATOS
 	//----------------------------------------------------------------------------------------------------------------------------------
 	
+	/**
+	 * Obtiene una reserva por el id pasado por parametro. 
+	 * @param idReserva de la reserva que se quiere buscar. 
+	 * @return de la reserva con el id pasado por parametro, null en caso contrario. 
+	 * @throws Exception
+	 * @throws SQLException
+	 */
+	public Reserva darReserva(Long idReserva) throws Exception, SQLException{
+		
+		String sql = String.format("SELECT * FROM %1$s.RESERVA r WHERE r.idReserva = %2$d", USUARIO, idReserva);
+		System.out.println(sql);
+		PreparedStatement query = conn.prepareStatement(sql);
+		
+		ResultSet resultado = query.executeQuery();
+		Reserva reserva = null;
+		
+		while(resultado.next()) 
+			reserva = convetirResultSet(resultado);
+		
+		return reserva;
+		
+	}
+	
+	
+	/**
+	 * Crea una nueva reserva en la base de datos. 
+	 * @param idPersona de la persona que hace la reserva. 
+	 * @param idOferta
+	 * @param reserva
+	 * @param idReservaColectiva
+	 * @throws SQLException
+	 * @throws Exception
+	 */
 	public void crearReserva(Long idPersona, Long idOferta, Reserva reserva, Long idReservaColectiva) throws SQLException, Exception {
 		
 		String timestampIniciopInString = formatearFecha(reserva.getFechaInicioReserva());
