@@ -1,0 +1,2 @@
+fn3.oracle.virtual.uniandes.edu.co
+sqlldr ISIS2304A721810/sMGhyClbTP@fn3.oracle.virtual.uniandes.edu.co:1521/prod.oracle.virtual.uniandes.edu.co control=controlOferta.ctl log=logOferta.log data=data_Oferta.csv
