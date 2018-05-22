@@ -91,7 +91,7 @@ public class DAOOperador extends DAOAlohAndes{
 						"        WHERE POSICION = 1)\r\n" + 
 						"        ON OFERTA.IDOFERTA= OFERTA_ID)\r\n" + 
 						"        ) ON OPERADOR.IDOPERADOR = OPERADOR_ID)\r\n" + 
-						"ORDER BY NRO_SEMANA;", USUARIO);
+						"ORDER BY NRO_SEMANA", USUARIO);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		ResultSet resultado = prepStmt.executeQuery();
@@ -156,7 +156,7 @@ public class DAOOperador extends DAOAlohAndes{
 						"        WHERE POSICION = 1)\r\n" + 
 						"        ON OFERTA.IDOFERTA= OFERTA_ID)\r\n" + 
 						"        ) ON OPERADOR.IDOPERADOR = OPERADOR_ID)\r\n" + 
-						"ORDER BY NRO_SEMANA;", USUARIO);
+						"ORDER BY NRO_SEMANA", USUARIO);
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		ResultSet resultado = prepStmt.executeQuery();

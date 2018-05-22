@@ -212,19 +212,19 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 	public ArrayNode getConsumoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(String fechaInicio, String fechaFinal, String tipoDeOferta, String datoOrdenar) throws SQLException, Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode personasHabilitadas = mapper.createArrayNode();
-
+		
 		String sql = 
-				String.format("SELECT DISTINCT PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE, PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO\r\n" + 
-						"FROM\r\n" + 
-						"((%1$s.PERSONAHABILITADA INNER JOIN %1$s.RESERVA ON PERSONAHABILITADA.IDPERSONAHABILITADA = RESERVA.IDPERSONAHABILITADA) \r\n" + 
-						"    INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA )\r\n" + 
-						"WHERE OFERTA.TIPODEOFERTA = %4$s \r\n" + 
-						"AND RESERVA.FECHARESERVA>= %2$s AND RESERVA.FECHARESERVA<= %3$s \r\n" + 
-						"ORDER BY PERSONAHABILITADA.%5$s);", USUARIO, fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
-
+				String.format("SELECT DISTINCT PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE, PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO " + 
+						" FROM " + 
+						" ((%1$s.PERSONAHABILITADA INNER JOIN %1$s.RESERVA ON PERSONAHABILITADA.IDPERSONAHABILITADA = RESERVA.IDPERSONAHABILITADA) " + 
+						"    INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA ) " + 
+						" WHERE OFERTA.TIPODEOFERTA = '%4$s'  " + 
+						" AND RESERVA.FECHAINICIORESERVA>= '%2$s' AND RESERVA.FECHAINICIORESERVA<= '%3$s'  " + 
+						" ORDER BY PERSONAHABILITADA.%5$s ", USUARIO, fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
+		System.out.println(fechaInicio+" " +fechaFinal +" " +tipoDeOferta+" " + datoOrdenar);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		ResultSet resultado = prepStmt.executeQuery();
-
+		
 		while(resultado.next()){
 			ObjectNode personaHabilitada = mapper.createObjectNode();
 
@@ -258,18 +258,20 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 		ArrayNode personasHabilitadas = mapper.createArrayNode();
 
 		String sql = 
-				String.format("SELECT DISTINCT OFERTA.TIPODEOFERTA, PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE, \r\n" + 
-						"PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO\r\n" + 
-						"FROM\r\n" + 
-						"((%1$s.PERSONAHABILITADA INNER JOIN %1$s.RESERVA ON PERSONAHABILITADA.IDPERSONAHABILITADA = \r\n" + 
-						"RESERVA.IDPERSONAHABILITADA) \r\n" + 
-						"    INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA )\r\n" + 
-						"WHERE RESERVA.FECHARESERVA>='01/03/18' AND RESERVA.FECHARESERVA<='30/12/18'\r\n" + 
-						"GROUP BY OFERTA.TIPODEOFERTA,PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE, \r\n" + 
-						"PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO \r\n" + 
-						"ORDER BY OFERTA.TIPODEOFERTA;", USUARIO, fechaInicio, fechaFinal);
-
+				String.format(" SELECT DISTINCT OFERTA.TIPODEOFERTA, PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE," + 
+						" PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO" + 
+						" FROM" + 
+						" ((%1$s.PERSONAHABILITADA INNER JOIN %1$s.RESERVA ON PERSONAHABILITADA.IDPERSONAHABILITADA = " + 
+						" RESERVA.IDPERSONAHABILITADA)" + 
+						" INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA )" + 
+						" WHERE RESERVA.FECHAINICIORESERVA>= '%2$s' AND RESERVA.FECHAINICIORESERVA<= '%3$s' " + 
+						" GROUP BY OFERTA.TIPODEOFERTA, PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE," + 
+						" PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO" + 
+						" ORDER BY OFERTA.TIPODEOFERTA", USUARIO, fechaInicio, fechaFinal);
+		
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		System.out.println(sql);
+		System.out.println(fechaInicio+" "+fechaFinal );
 		ResultSet resultado = prepStmt.executeQuery();
 
 		while(resultado.next()){
@@ -306,19 +308,21 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 		ArrayNode personasHabilitadas = mapper.createArrayNode();
 
 		String sql = 
-				String.format("SELECT PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE, \r\n" + 
-						"PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO \r\n" + 
-						"FROM (%1$s.PERSONAHABILITADA LEFT JOIN\r\n" + 
-						"(SELECT DISTINCT RESERVA.IDPERSONAHABILITADA ID_NO_MOSTRAR\r\n" + 
-						"    FROM\r\n" + 
-						"        %1$s.RESERVA INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA  \r\n" + 
-						"        WHERE OFERTA.TIPODEOFERTA = %3$s \r\n" + 
-						"AND RESERVA.FECHARESERVA>= %2$s AND RESERVA.FECHARESERVA<= %3$s) TABLAMALA\r\n" + 
-						"\r\n" + 
-						"ON PERSONAHABILITADA.IDPERSONAHABILITADA = TABLAMALA.ID_NO_MOSTRAR)\r\n" + 
-						"WHERE TABLAMALA.ID_NO_MOSTRAR IS NULL\r\n" + 
-						"ORDER BY PERSONAHABILITADA.%4$s;", USUARIO, fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
+				String.format("SELECT PERSONAHABILITADA.IDPERSONAHABILITADA, PERSONAHABILITADA.NOMBRE,  " + 
+						" PERSONAHABILITADA.EMAIL, PERSONAHABILITADA.TELEFONO  " + 
+						" FROM (%1$s.PERSONAHABILITADA LEFT JOIN " + 
+						" (SELECT DISTINCT RESERVA.IDPERSONAHABILITADA ID_NO_MOSTRAR " + 
+						"     FROM " + 
+						"         %1$s.RESERVA INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA   " + 
+						"         WHERE OFERTA.TIPODEOFERTA = '%4$s'  " + 
+						" AND RESERVA.FECHAINICIORESERVA>= '%2$s' AND RESERVA.FECHAINICIORESERVA<= '%3$s') TABLAMALA " + 
+						" " + 
+						" ON PERSONAHABILITADA.IDPERSONAHABILITADA = TABLAMALA.ID_NO_MOSTRAR) " + 
+						" WHERE TABLAMALA.ID_NO_MOSTRAR IS NULL " + 
+						" ORDER BY PERSONAHABILITADA.%5$s", USUARIO, fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
 
+		System.out.println(sql);
+		System.out.println(fechaInicio+" "+fechaFinal +" "+tipoDeOferta+" "+datoOrdenar);
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		ResultSet resultado = prepStmt.executeQuery();
 
@@ -367,7 +371,7 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 						"RESERVA.FECHAINICIORESERVA)) AS CANTIDAD_MESES \r\n" + 
 						"        FROM %1$s.RESERVA GROUP BY  RESERVA.IDPERSONAHABILITADA )\r\n" + 
 						"        WHERE CANTIDAD_MESES=4)\r\n" + 
-						"    ON PERSONAHABILITADA.IDPERSONAHABILITADA = ID_USUARIO);", USUARIO);
+						"    ON PERSONAHABILITADA.IDPERSONAHABILITADA = ID_USUARIO)", USUARIO);
 
 		PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
 		ResultSet resultado1 = prepStmt1.executeQuery();
@@ -413,7 +417,7 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 						"                %1$s.RESERVA INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA)\r\n" + 
 						"                GROUP BY RESERVA.IDPERSONAHABILITADA) THAT ON ID_USUARIO2= THAT.ID_USUARIO1)\r\n" + 
 						"        WHERE CANT_RESERVAS_VALIOSAS = CANT_RESERVAS_TOTALES)\r\n" + 
-						"    ON PERSONAHABILITADA.IDPERSONAHABILITADA= ID_VALIOSO);", USUARIO);
+						"    ON PERSONAHABILITADA.IDPERSONAHABILITADA= ID_VALIOSO)", USUARIO);
 
 		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 		ResultSet resultado2 = prepStmt2.executeQuery();
@@ -462,7 +466,7 @@ public class DAOPersonaHabilitada extends DAOAlohAndes {
 						"                %1$s.RESERVA INNER JOIN %1$s.OFERTA ON RESERVA.IDOFERTA = OFERTA.IDOFERTA)\r\n" + 
 						"                GROUP BY RESERVA.IDPERSONAHABILITADA) THAT ON ID_USUARIO2= THAT.ID_USUARIO1)\r\n" + 
 						"        WHERE CANT_RESERVAS_VALIOSAS = CANT_RESERVAS_TOTALES)\r\n" + 
-						"    ON PERSONAHABILITADA.IDPERSONAHABILITADA= ID_VALIOSO);", USUARIO);
+						"    ON PERSONAHABILITADA.IDPERSONAHABILITADA= ID_VALIOSO)", USUARIO);
 
 		PreparedStatement prepStmt3 = conn.prepareStatement(sql3);
 		ResultSet resultado3 = prepStmt3.executeQuery();
