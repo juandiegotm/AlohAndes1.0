@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1b916bba-3ac2-42d5-9282-1b54034b3dcc",
+		"_postman_id": "801e67b9-d174-45fc-a739-c9a441660c48",
 		"name": "AlohAndesCollection",
 		"description": "Está colección permite realizar las correspondientes pruebas al proyecto AlohAndes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -77,7 +77,10 @@
 						"value": "application/json"
 					}
 				],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/512345601/reservas/18",
 					"protocol": "http",
@@ -528,6 +531,348 @@
 						"reservas",
 						"reservaColectiva",
 						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC10_parte1- Consultar consumo de AlohAndes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/consumoAlohAndesFechas-Oferta-Orden?fechaInicio=01-03-18&fechaFinal=30-12-18&tipoOferta=OFERTAHOTEL&orden=NOMBRE",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"consumoAlohAndesFechas-Oferta-Orden"
+					],
+					"query": [
+						{
+							"key": "fechaInicio",
+							"value": "01-03-18"
+						},
+						{
+							"key": "fechaFinal",
+							"value": "30-12-18"
+						},
+						{
+							"key": "tipoOferta",
+							"value": "OFERTAHOTEL"
+						},
+						{
+							"key": "orden",
+							"value": "NOMBRE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC10_parte2- Consultar consumo de AlohAndes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bedbc8db-03a1-4bbf-8730-46c92de07b7e",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/consumoAlohAndesFechas-AgrupadoOferta?fechaInicio=06-01-18&fechaFinal=30-12-18",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"consumoAlohAndesFechas-AgrupadoOferta"
+					],
+					"query": [
+						{
+							"key": "fechaInicio",
+							"value": "06-01-18"
+						},
+						{
+							"key": "fechaFinal",
+							"value": "30-12-18"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC11- Consultar consumo NEGATIVO de AlohAndes Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/consumoNegativoAlohAndesFechas-Oferta-Orden?fechaInicio=06-01-18&fechaFinal=30-12-18&tipoOferta=OFERTAHOTEL&orden=NOMBRE",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"consumoNegativoAlohAndesFechas-Oferta-Orden"
+					],
+					"query": [
+						{
+							"key": "fechaInicio",
+							"value": "06-01-18"
+						},
+						{
+							"key": "fechaFinal",
+							"value": "30-12-18"
+						},
+						{
+							"key": "tipoOferta",
+							"value": "OFERTAHOTEL"
+						},
+						{
+							"key": "orden",
+							"value": "NOMBRE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC12_parte1- Semanas y ofertas con mayor ocupacion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/semanasConOfertasMayorOcupacion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"ofertas",
+						"semanasConOfertasMayorOcupacion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC12_parte2- Semanas y ofertas con menor ocupacion",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/ofertas/semanasConOfertasMenorOcupacion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"ofertas",
+						"semanasConOfertasMenorOcupacion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC12_parte3- Semanas y operadores con mayor demanda",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/operadores/semanasConOperadoresMasSolicitados",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"operadores",
+						"semanasConOperadoresMasSolicitados"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC12_parte4- Semanas y operadores con menor demanda",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/operadores/semanasConOperadoresMenosSolicitados",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"operadores",
+						"semanasConOperadoresMenosSolicitados"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RFC13- Clientes buenos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "df4b828c-0efb-48ca-a160-e362698a6c3f",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/AlohAndes1.0/rest/personasHabilitadas/consultarBuenosClientes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"AlohAndes1.0",
+						"rest",
+						"personasHabilitadas",
+						"consultarBuenosClientes"
 					]
 				}
 			},

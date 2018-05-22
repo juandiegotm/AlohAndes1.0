@@ -1031,7 +1031,7 @@ public class AlohAndesTransactionManager {
 		{
 			this.conn = darConexion();
 			dao.setConn(conn);
-
+		
 			personashabilitadas = dao.getConsumoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(fechaInicio, fechaFinal, tipoDeOferta, datoOrdenar);
 
 		}

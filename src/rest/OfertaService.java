@@ -179,7 +179,7 @@ public class OfertaService extends AlohAndesService{
 		//RFC12_Parte2
 			@GET
 			@Produces({ MediaType.APPLICATION_JSON })
-			@Path("/semanasConOfertasMayorOcupacion")
+			@Path("/semanasConOfertasMenorOcupacion")
 			public Response getSemanasConOfertasDeMenorOcupacion() {
 				try {
 					AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());

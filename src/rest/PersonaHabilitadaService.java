@@ -129,7 +129,7 @@ public class PersonaHabilitadaService extends AlohAndesService {
 			try {
 				AlohAndesTransactionManager tm = new AlohAndesTransactionManager(getPath());
 				ArrayNode consumoAlohAndesFechaOfertaOrden = tm.getConsumoDeAlohAndesDadoRangoFechasTipoOfertaYdatoOrden(fechaInicio, fechaFinal, tipoOferta, orden);
-
+				
 				return Response.status(200).entity(consumoAlohAndesFechaOfertaOrden).build();
 			} catch (Exception e) {
 				return Response.status(500).entity(doErrorMessage(e)).build();
