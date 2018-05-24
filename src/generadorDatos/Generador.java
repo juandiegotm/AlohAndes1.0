@@ -10,7 +10,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.Buffer;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Generador {
 
@@ -27,7 +32,8 @@ public class Generador {
 	public static void main(String[] args) {
 		//cambiarConstante("./data/data.csv", "./data/data1.csv", "change1"); //darConstanteOferta()
 		//cambiarConstante("./data/data1.csv", "./data/data2.csv", "change2"); //(r.nextInt(99807)+1)+"");
-		cambiarConstante("./data/data2.csv", "./data/data3.csv", "change3"); darConstanteHabilitado();
+		//cambiarConstante("./data/data2.csv", "./data/data3.csv", "change3"); darConstanteHabilitado();
+		generarReservas();
 	}
 
 	public static void cambiarConstante(String archivoEntrada, String archivoSalida, String nombreConstante) {
@@ -55,6 +61,73 @@ public class Generador {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void generarReservas() {
+		try {
+		FileWriter writter = new FileWriter(new File("./data/data_reservas.csv"));
+		BufferedWriter bw = new BufferedWriter(writter);
+		bw.write("idOferta,idPersonaHabilitada,fechaInicioReserva,estadoReserva,idReserva,fechaFinalReserva,cantidad \n");
+		
+		Random r = new Random();
+		int contador = 0;
+		Calendar d1 = Calendar.getInstance();
+		d1.set(2018, 01, 03);
+		Calendar d2 = Calendar.getInstance();
+		d2.set(2018, 12, 31);
+		
+		for(int i = 1; i <= 99642;i++) {
+			
+			
+			for(int j = 1; j <= 3; j++) {
+				int idPersonaHabilitada = r.nextInt(100000) + 1;
+				int idOferta = i;
+				
+				//Generador de fechas
+				Date fechaInicioReservaDate = null;
+				Date fechaFinalReservaDate = null;
+				
+				
+				
+				boolean termino = false;
+				
+				while(!termino) {
+					fechaInicioReservaDate = new Date(ThreadLocalRandom.current().nextLong(d1.getTimeInMillis(), d2.getTimeInMillis()));
+					fechaFinalReservaDate = new Date(ThreadLocalRandom.current().nextLong(d1.getTimeInMillis(), d2.getTimeInMillis()));
+					System.out.println(fechaFinalReservaDate.getYear());
+					if(fechaFinalReservaDate.getYear()!=119 &&fechaInicioReservaDate.before(fechaFinalReservaDate))
+						termino = true;
+						
+					
+				}
+				
+				String fechaInicioReserva = formatearFecha(fechaInicioReservaDate);
+				String estadoReserva = "en espera";
+				int idReserva = contador++;
+				String fechaFinalReserva = formatearFecha(fechaFinalReservaDate);
+				int cantidad = 1;
+				bw.write(idOferta + "," + idPersonaHabilitada + "," + fechaInicioReserva + "," + estadoReserva + "," + idReserva + "," + fechaFinalReserva + "," + cantidad +  "\n");	
+			}
+			
+			
+		}
+		
+		bw.close();
+		writter.close();
+		
+		
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static String formatearFecha(Date fecha) {
+		Format formatter = new SimpleDateFormat("dd/MM/yyyy");
+		return  formatter.format(fecha);
+	}
+
+	
+	
+	
 	
 	public static String darConstanteHabilitado() {
 		String constante = "";
